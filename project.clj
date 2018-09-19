@@ -5,11 +5,17 @@
                  [re-frame "0.10.5"]
                  [secretary "1.2.3"]]
 
-  :plugins [[lein-cljsbuild "1.1.7"]]
+  :plugins [[lein-cljsbuild "1.1.7"]
+            [lein-sassc "0.10.4"]]
 
   :min-lein-version "2.5.3"
 
   :source-paths ["src/clj" "src/cljs"]
+
+  :sassc [{:src         "sass/woolybear.scss"
+           :output-to   "resources/public/css/wb.css"
+           :style       "nested"
+           :import-path "sass"}]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
