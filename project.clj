@@ -6,7 +6,7 @@
                  [secretary "1.2.3"]]
 
   :plugins [[lein-cljsbuild "1.1.7"]
-            [lein-sassc "0.10.4"]]
+            [lein-sassc "0.10.5"]]
 
   :min-lein-version "2.5.3"
 

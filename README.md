@@ -11,7 +11,7 @@ This repository was initially created using the following command:
 
 ### Adding Bulma
 
-### Adding sassc
+Here's how I added the Bulma CSS framework as a git subproject:
 
 Under the main repository directory, create a `sass` subdirectory, then `cd` into that directory
 and add Bulma as a git submodule so we can easily update it when/if needed. 
@@ -23,6 +23,8 @@ and add Bulma as a git submodule so we can easily update it when/if needed.
 Then add the `sass/woolybear.scss` file.
 
 ### Adding `lein sassc`
+
+Here's how I added the `lein sassc` plugin:
 
 In the `project.clj` file, add the following
 
@@ -37,6 +39,10 @@ In the `project.clj` file, add the following
 Note: You will need to manually run `lein sassc once` to rebuild your CSS file
 when you have changes. Your editor/IDE may have a way to set up a keyboard shortcut
 to make this easier.
+
+## Documentation
+
+More detailed documentation is available [here](docs/)
 
 ## Development Mode
 
