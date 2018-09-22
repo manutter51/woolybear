@@ -15,17 +15,19 @@ the only place we use raw HTML elements like `[:div ...]` to form our views. If 
 it right, we should have `ad` components for *everything* we need to build larger units.
 Because these components are small, we can put several related components in a single file.
 
-## The `pack` namespace
+## The `packs` namespace
 
-The `woolybear.pack.*` namespaces are for larger components built up out of the atomic components
+The `woolybear.packs.*` namespaces are for larger components built up out of the atomic components
 in the `ad` namespace. A "pack" is a file that has sections for each of the re-frame building
 blocks: db, subscriptions, event handlers and views. Thus, each component gets its own `pack`
 namespace that keeps everything you need to know about that component in one place. You can
 also use a pack for functional systems like navigation that may not have explicit view components.
 
-## The `page` namespace
+## The `pages` namespace
 
-As you might guess, the `woolybear.page.*` namespaces are where the top-level pages live. Each
+As you might guess, the `woolybear.pages.*` namespaces are where the top-level pages live. Each
 `page` namespace defines the content area for a specific page, displayed between the global
 header and footer provided by the top-level layout.
 
+
+[Back](_start_here.md)

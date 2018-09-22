@@ -42,7 +42,7 @@ to make this easier.
 
 ## Documentation
 
-More detailed documentation is available [here](docs/)
+More detailed documentation is available [here](docs/).
 
 ## Development Mode
 
