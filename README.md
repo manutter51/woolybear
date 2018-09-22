@@ -11,7 +11,7 @@ This repository was initially created using the following command:
 
 ### Adding Bulma
 
-Here's how I added the Bulma CSS framework as a git subproject:
+Here's how I added the Bulma CSS framework as a git sub-module:
 
 Under the main repository directory, create a `sass` subdirectory, then `cd` into that directory
 and add Bulma as a git submodule so we can easily update it when/if needed. 

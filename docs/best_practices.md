@@ -1,7 +1,7 @@
 # Best Practices
 
 The following are my recommendations for maximizing code re-use, flexibility,
-ease of refactoring, ease of testing, and ease of debuggin, while minimizing
+ease of refactoring, ease of testing, and ease of debugging, while minimizing
 the number of bugs.
 
 * **Avoid the use of raw HTML outside of atomic components.** You may find cases
