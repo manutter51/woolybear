@@ -40,24 +40,22 @@
     [nil args]))
 
 (def function-type (type #()))
+(def always-nil (atom nil))
 
 (defn subscribe-to
   "Given a value that may be either a re-frame subscription ratom, or a vector
   specifying a re-frame subscription, return a valid re-frame subscription ratom.
-  The value can also be a zero-arity function that returns a subscription."
+  If the value is nil, returns an atom that always dereferences to nil.
+  The value can also be a zero-arity function that returns a subscription, in
+  which case subscribe-to will return the result of calling that function."
   [sub]
   (condp = (type sub)
     reagent.ratom/RAtom sub
     cljs.core/Atom sub
-    function-type  (sub)
+    function-type (sub)
+    nil always-nil
     ;; else
     (re-frame/subscribe sub)))
-
-(defn subscribe2
-  [sub]
-  (prn {:sub sub}))
-
-(prn {:test (subscribe-to (atom true))})
 
 (defn- to-name
   "Given a value that may be a string, symbol, or keyword, return the

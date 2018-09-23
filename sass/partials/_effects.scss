@@ -1,0 +1,24 @@
+// effects.scss
+// animation effects for use with elements that move, change size, or otherwise
+// make a spectacle of themselves to try and get attention.
+
+// component-specific effects
+
+.shy {
+  transition: all 300ms ease-in-out;
+}
+
+// general effects (use with other effects)
+
+// slide down from or roll up too the top of the parent element
+.from-top {
+  transition: all 300ms ease-in-out;
+
+  &.visible {
+    height: inherit;
+  }
+
+  &.hidden {
+    height: 0;
+  }
+}
