@@ -5,22 +5,18 @@
 
 (deftest shy-block-test
 
-  (testing "Rendering :subscribe-to-visible? option."
-    (let [vis? (atom true)
-          opts {:subscribe-to-visible? vis?}
-          r (sut/shy-block opts [:foo])]
+  (testing "Rendering the :active? option."
+    (let [r (sut/shy-block {:active? true} [:foo])]
       (is (wtu/classes-match? #{:shy :visible}
-                                (r opts [:foo]))
-            "renders classes correctly when visible")
-      (swap! vis? not)
+                              (r {:active? true} [:foo]))
+          "renders classes correctly when visible")
       (is (wtu/classes-match? #{:shy :hidden}
-                                (r opts [:foo]))
-            "renders classes correctly when hidden")))
+                              (r {:active? false} [:foo]))
+          "renders classes correctly when hidden")))
 
   (testing "Rendering the :subscribe-to-classes option."
-    (let [vis? (atom true)
-          cl (atom #{:foo})
-          opts {:subscribe-to-visible? vis?
+    (let [cl (atom #{:foo})
+          opts {:active? true
                 :subscribe-to-classes cl}
           r (sut/shy-block opts [:foo])]
       (is (= (r opts [:foo])
@@ -29,7 +25,19 @@
       (reset! cl #{:bar :baz})
       (is (= (r opts [:foo])
                [:div {:class "shy visible baz bar"} [:foo]])
-            "renders correctly dynamic classes have changed"))))
+            "renders correctly dynamic classes have changed")))
+
+  (testing "Rendering the :extra-classes option."
+    (let [opts {:active? true
+                :extra-classes :foo}
+          r (sut/shy-block opts [:foo])]
+      (is (= (r opts [:foo])
+             [:div {:class "shy visible foo"} [:foo]])
+          "renders correctly with extra classes")
+      (is (= (r {:active? true
+                 :extra-classes :bar} [:foo])
+             [:div {:class "shy visible foo"} [:foo]])
+          "does not change classes at render time if extra-classes have changed"))))
 
 (deftest scroll-pane-header-test
   (testing "Rendering with no opts"

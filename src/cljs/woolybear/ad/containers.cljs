@@ -7,9 +7,7 @@
             [cljs.spec.alpha :as s]
             [woolybear.ad.utils :as adu]))
 
-(s/def :container/subscribe-to-visible? :ad/subscription?)
-;; :ad/extra-classes defined in woolybear.ad.utils
-(s/def :shy-block/options (s/keys :req-un [:container/subscribe-to-visible?]
+(s/def :shy-block/options (s/keys :req-un [:ad/active?]
                                   :opt-un [:ad/extra-classes :ad/subscribe-to-classes]))
 (s/fdef shy-block
         :args (s/cat :opts (s/? :shy-block/options)
@@ -22,13 +20,11 @@
   the :extra-classes option. For extra classes that change dynamically at run-time,
   pass in :subscribe-to-classes instead."
   [opts & _]
-  (let [{:keys [extra-classes subscribe-to-visible? subscribe-to-classes]} opts
-        visible?-sub (adu/subscribe-to subscribe-to-visible?)
+  (let [{:keys [extra-classes subscribe-to-classes]} opts
         classes-sub (adu/subscribe-to subscribe-to-classes)]
-    (fn [_ & children]
-      (let [visible? @visible?-sub
-            dynamic-classes @classes-sub
-            vis-class (if visible? :visible :hidden)]
+    (fn [{:keys [active?]} & children]
+      (let [dynamic-classes @classes-sub
+            vis-class (if active? :visible :hidden)]
         (into [:div {:class (adu/css->str :shy
                                           vis-class
                                           extra-classes

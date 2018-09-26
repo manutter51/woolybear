@@ -42,6 +42,12 @@
 ;; class or set of classes to render
 (s/def :ad/subscribe-to-classes :ad/subscription?)
 
+;; Some components are meant to be used as a direct subcomponent of
+;; a parent that controls whether or not they are visible, enabled,
+;; or otherwise active. The parent will pass in a boolean value to
+;; the :ad/active? option to either enable or disable it.
+(s/def :ad/active? boolean?)
+
 (defn extract-opts
   "Given a vector of arguments, checks to see if the first argument is a map of options.
   Returns a 2-element vector containing the options (if any) and a vector of the remaining
