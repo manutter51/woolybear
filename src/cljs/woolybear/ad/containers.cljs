@@ -8,12 +8,14 @@
             [woolybear.ad.utils :as adu]))
 
 (s/def :container/subscribe-to-visible? :ad/subscription?)
-(s/def :container/subscribe-to-classes :ad/subscription?)
 ;; :ad/extra-classes defined in woolybear.ad.utils
 (s/def :shy-block/options (s/keys :req-un [:container/subscribe-to-visible?]
-                                  :opt-un [:ad/extra-classes :container/subscribe-to-classes]))
+                                  :opt-un [:ad/extra-classes :ad/subscribe-to-classes]))
+(s/fdef shy-block
+        :args (s/cat :opts (s/? :shy-block/options)
+                     :children (s/+ any?))
+        :ret vector?)
 
-;; TODO add s/fdef's
 (defn shy-block
   "A container that may or may not be visible, depending on the current value of
   its `visible?` subscription. If you wish you can pass in extra CSS classes via
@@ -34,7 +36,11 @@
               children)))))
 
 (s/def :scroll-pane-header/options (s/keys :opt-un [:ad/extra-classes
-                                                    :container/subscribe-to-classes]))
+                                                    :ad/subscribe-to-classes]))
+(s/fdef scroll-pane-header
+        :args (s/cat :opts (s/? :scroll-pane-header/options)
+                     :children (s/+ any?))
+        :ret vector?)
 (defn scroll-pane-header
   "A component with no bottom margin. If a scroll-pane-header is passed in as
   a top-level child of a v-scroll-pane, it will remain fixed in place at the
@@ -57,7 +63,12 @@
               children)))))
 
 (s/def :scroll-pane-footer/options (s/keys :opt-un [:ad/extra-classes
-                                                    :container/subscribe-to-classes]))
+                                                    :ad/subscribe-to-classes]))
+(s/fdef scroll-pane-footer
+        :args (s/cat :opts (s/? :scroll-pane-footer/options)
+                     :children (s/+ any?))
+        :ret vector?)
+
 (defn scroll-pane-footer
   "A component with no top margin. If a scroll-pane-footer is passed in as
   a top-level child of a v-scroll-pane, it will remain fixed in place at the
@@ -87,7 +98,11 @@
     :body))
 
 (s/def :v-scroll-pane/options (s/keys :opt-un [:ad/extra-classes
-                                               :container/subscribe-to-classes]))
+                                               :ad/subscribe-to-classes]))
+(s/fdef v-scroll-pane
+        :args (s/cat :opts (s/? :v-scroll-pane/options)
+                     :children (s/+ any?))
+        :ret vector?)
 
 (defn v-scroll-pane
   "A component that sets overflow-y to auto so that if its contents exceed the
