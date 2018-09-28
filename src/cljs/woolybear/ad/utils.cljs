@@ -9,10 +9,10 @@
 ;; or as a vector that can be passed to a re-frame/subscribe call. Use
 ;; the subscribe-to function, below, to convert this value into a valid
 ;; ratom/subscription that can be dereferenced at runtime.
-(s/def :ad/subscription? (s/or :ratom #(= (type %) reagent.ratom/RAtom)
-                               :atom #(= (type %) cljs.core/Atom)
-                               :fn fn?
-                               :vec vector?))
+(s/def :ad/subscription (s/or :ratom #(= (type %) reagent.ratom/RAtom)
+                              :atom #(= (type %) cljs.core/Atom)
+                              :fn fn?
+                              :vec vector?))
 
 ;; An event handler argument can be passed in as either a standard
 ;; re-frame event vector, or as a function (i.e. for running tests
@@ -40,7 +40,7 @@
 ;; Some components let you pass in CSS classes that can change at
 ;; render time. Pass in a subscription that returns the current
 ;; class or set of classes to render
-(s/def :ad/subscribe-to-classes :ad/subscription?)
+(s/def :ad/subscribe-to-classes :ad/subscription)
 
 ;; Some components are meant to be used as a direct subcomponent of
 ;; a parent that controls whether or not they are visible, enabled,

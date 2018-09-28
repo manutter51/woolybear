@@ -1,6 +1,7 @@
 (defproject woolybear "0.1.0-SNAPSHOT"
-  :dependencies [[org.clojure/clojure "1.9.0"]
-                 [org.clojure/clojurescript "1.10.238"]
+  :dependencies [[org.clojure/clojure "1.10.0-alpha8"]
+                 [org.clojure/clojurescript "1.10.339"]
+                 [org.clojure/test.check "0.10.0-alpha3"]
                  [reagent "0.7.0"]
                  [re-frame "0.10.5"]
                  [secretary "1.2.3"]]
@@ -11,6 +12,7 @@
   :min-lein-version "2.5.3"
 
   :source-paths ["src/clj" "src/cljs"]
+  :test-paths ["test/cljs"]
 
   :sassc [{:src         "sass/woolybear.scss"
            :output-to   "resources/public/css/wb.css"

@@ -9,10 +9,6 @@
 
 (s/def :shy-block/options (s/keys :req-un [:ad/active?]
                                   :opt-un [:ad/extra-classes :ad/subscribe-to-classes]))
-(s/fdef shy-block
-        :args (s/cat :opts (s/? :shy-block/options)
-                     :children (s/+ any?))
-        :ret vector?)
 
 (defn shy-block
   "A container that may or may not be visible, depending on the current value of
@@ -25,18 +21,19 @@
     (fn [{:keys [active?]} & children]
       (let [dynamic-classes @classes-sub
             vis-class (if active? :visible :hidden)]
-        (into [:div {:class (adu/css->str :shy
+        (into [:div {:class (adu/css->str :wb-shy
                                           vis-class
                                           extra-classes
                                           dynamic-classes)}]
               children)))))
 
+(s/fdef shy-block
+  :args (s/cat :opts (s/? :shy-block/options)
+               :children (s/+ any?))
+  :ret vector?)
+
 (s/def :scroll-pane-header/options (s/keys :opt-un [:ad/extra-classes
                                                     :ad/subscribe-to-classes]))
-(s/fdef scroll-pane-header
-        :args (s/cat :opts (s/? :scroll-pane-header/options)
-                     :children (s/+ any?))
-        :ret vector?)
 (defn scroll-pane-header
   "A component with no bottom margin. If a scroll-pane-header is passed in as
   a top-level child of a v-scroll-pane, it will remain fixed in place at the
@@ -53,18 +50,18 @@
     (fn [& args]
       (let [[_ children] (adu/extract-opts args)
             dynamic-classes @classes-sub]
-        (into [:div {:class (adu/css->str :scroll-pane-header
+        (into [:div {:class (adu/css->str :wb-scroll-pane-header
                                           extra-classes
                                           dynamic-classes)}]
               children)))))
 
+(s/fdef scroll-pane-header
+  :args (s/cat :opts (s/? :scroll-pane-header/options)
+               :children (s/+ any?))
+  :ret vector?)
+
 (s/def :scroll-pane-footer/options (s/keys :opt-un [:ad/extra-classes
                                                     :ad/subscribe-to-classes]))
-(s/fdef scroll-pane-footer
-        :args (s/cat :opts (s/? :scroll-pane-footer/options)
-                     :children (s/+ any?))
-        :ret vector?)
-
 (defn scroll-pane-footer
   "A component with no top margin. If a scroll-pane-footer is passed in as
   a top-level child of a v-scroll-pane, it will remain fixed in place at the
@@ -81,10 +78,15 @@
     (fn [& args]
       (let [[_ children] (adu/extract-opts args)
             dynamic-classes @classes-sub]
-        (into [:div {:class (adu/css->str :scroll-pane-footer extra-classes dynamic-classes)}]
+        (into [:div {:class (adu/css->str :wb-scroll-pane-footer extra-classes dynamic-classes)}]
               children)))))
 
-(defn- header-footer-body?
+(s/fdef scroll-pane-footer
+  :args (s/cat :opts (s/? :scroll-pane-footer/options)
+               :children (s/+ any?))
+  :ret vector?)
+
+(defn- get-header-footer-body-type
   "Given a child element, return :header if it is a scroll-pane-header, or
   :footer if it is a scroll-pane-footer, or :body if it is anything else."
   [child]
@@ -95,11 +97,6 @@
 
 (s/def :v-scroll-pane/options (s/keys :opt-un [:ad/extra-classes
                                                :ad/subscribe-to-classes]))
-(s/fdef v-scroll-pane
-        :args (s/cat :opts (s/? :v-scroll-pane/options)
-                     :children (s/+ any?))
-        :ret vector?)
-
 (defn v-scroll-pane
   "A component that sets overflow-y to auto so that if its contents exceed the
   component height, a scrollbar will appear. If any of the child elements are
@@ -117,15 +114,41 @@
         classes-sub (adu/subscribe-to subscribe-to-classes)]
     (fn [& args]
       (let [[_ children] (adu/extract-opts args)
-            {:keys [header footer body]} (group-by header-footer-body? children)
+            {:keys [header footer body]} (group-by get-header-footer-body-type children)
             dynamic-classes @classes-sub]
-        (into [:div {:class (adu/css->str :v-scroll-pane-container
+        (into [:div {:class (adu/css->str :wb-v-scroll-pane-container
                                           extra-classes
                                           dynamic-classes)}]
               (remove nil?
                       [(when header
-                         (into [:div.v-scroll-pane-header] header))
-                       (into [:div.v-scroll-pane-overflow] body)
+                         (into [:div.wb-v-scroll-pane-header] header))
+                       (into [:div.wb-v-scroll-pane-overflow] body)
                        (when footer
-                         (into [:div.v-scroll-pane-footer] footer))]))))))
+                         (into [:div.wb-v-scroll-pane-footer] footer))]))))))
 
+(s/fdef v-scroll-pane
+  :args (s/cat :opts (s/? :v-scroll-pane/options)
+               :children (s/+ any?))
+  :ret vector?)
+
+(s/def :bar/options (s/keys :opt-un [:ad/extra-classes
+                                     :ad/subscribe-to-classes]))
+
+(defn bar
+  "
+  Generic bar component, suitable for use as a toolbar, button bar, etc.
+  "
+  [& args]
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+        classes-sub (adu/subscribe-to subscribe-to-classes)]
+    (fn [& args]
+      (let [[_ children] (adu/extract-opts args)
+            dynamic-classes @classes-sub]
+        (into [:div {:class (adu/css->str :level :wb-bar
+                                          extra-classes dynamic-classes)}]
+              children)))))
+
+(s/fdef bar
+  :args (s/cat :opts (s/? :bar/options)
+               :children (s/* any?))
+  :ret vector?)

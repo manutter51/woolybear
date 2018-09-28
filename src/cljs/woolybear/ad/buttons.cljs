@@ -12,15 +12,10 @@
 (s/def :button/subscribe-to-disabled? :ad/subscription)
 (s/def :button/on-click :ad/event-handler)
 
-(s/def :button-options (s/keys :req-un [:button/on-click]
+(s/def :button/options (s/keys :req-un [:button/on-click]
                                :opt-un [:button/subscribe-to-disabled?
                                         :ad/extra-classes
                                         :ad/subscribe-to-classes]))
-
-(s/fdef button
-  :args (s/cat :opt :button-options
-               :children (s/+ any?))
-  :ret vector?)
 
 (defn button
   "
@@ -41,20 +36,20 @@
       (let [disabled? @disabled?-sub
             dynamic-classes @classes-sub
             attrs (cond-> {:on-click click-handler
-                           :class    (adu/css->str :button extra-classes dynamic-classes)}
+                           :class    (adu/css->str :wb-button extra-classes dynamic-classes)}
                           disabled? (assoc :disabled "disabled"))]
         (into [:button attrs] children)))))
+
+(s/fdef button
+  :args (s/cat :opt :button/options
+               :children (s/+ any?))
+  :ret vector?)
 
 (s/def :tab-button/active? boolean?)
 (s/def :tab-button/options (s/keys :req-un [:button/on-click :tab-button/active?]
                                    :opt-un [:button/subscribe-to-disabled?
                                             :ad/extra-classes
                                             :ad/subscribe-to-classes]))
-
-(s/fdef tab-button
-  :args (s/cat :opt :tab-button/options
-               :children (s/+ any?))
-  :ret vector?)
 
 (defn tab-button
   "
@@ -80,7 +75,13 @@
       (let [disabled? @disabled?-sub
             dynamic-classes @classes-sub
             attrs (cond-> {:on-click click-handler
-                           :class    (adu/css->str :button :tab-button (when active? :active)
+                           :class    (adu/css->str :wb-button :wb-tab-button (when active? :active)
                                                    extra-classes dynamic-classes)}
                           disabled? (assoc :disabled "disabled"))]
         (into [:button attrs] children)))))
+
+(s/fdef tab-button
+  :args (s/cat :opt :tab-button/options
+               :children (s/+ any?))
+  :ret vector?)
+
