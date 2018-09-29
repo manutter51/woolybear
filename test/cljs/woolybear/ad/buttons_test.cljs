@@ -1,6 +1,6 @@
 (ns woolybear.ad.buttons-test
   (:require [cljs.spec.alpha :as s]
-    [cljs.test :refer-macros [deftest is testing run-tests]]
+            [cljs.test :refer-macros [deftest is testing run-tests]]
             [woolybear.ad.utils :as adu]
             [woolybear.test.utils :as wtu]
             [woolybear.ad.buttons :as sut]))
@@ -77,8 +77,9 @@
     (let [clicker (fn [_] "Clicked!")
           expected-click-handler (adu/mk-handler clicker)
           label "Click Me!"
-          opts {:active?       false
-                :on-click      clicker}
+          opts {:id       :sut
+                :active?  false
+                :on-click clicker}
           b (sut/tab-button opts label)]
       (is (= (wtu/realize-handlers
                [:button {:on-click expected-click-handler
@@ -90,8 +91,9 @@
                [:button {:on-click expected-click-handler
                          :class    "wb-button wb-tab-button active"} label])
              (wtu/realize-handlers
-               (b {:active?       true
-                   :on-click      clicker} label)))
+               (b {:id       :sut
+                   :active?  true
+                   :on-click clicker} label)))
           "If :active? is true at render time, should render with 'active' CSS class")))
   (testing "subscribe to disable"
     (let [disable (atom false)
@@ -99,6 +101,7 @@
           expected-click-handler (adu/mk-handler clicker)
           label "Click Me!"
           opts {:subscribe-to-disabled? disable
+                :id                     :sut
                 :active?                false
                 :on-click               clicker}
           b (sut/tab-button opts label)]
@@ -122,6 +125,7 @@
           expected-click-handler (adu/mk-handler clicker)
           label "Click Me!"
           opts {:extra-classes :foo
+                :id            :sut
                 :active?       false
                 :on-click      clicker}
           b (sut/tab-button opts label)]
@@ -136,6 +140,7 @@
                          :class    "wb-button wb-tab-button foo"} label])
              (wtu/realize-handlers
                (b {:extra-classes :bar
+                   :id            :sut
                    :active?       false
                    :on-click      clicker} label)))
           "If render-time value of extra class changes, should render original value, not changed value.")))
@@ -146,6 +151,7 @@
           expected-click-handler (adu/mk-handler clicker)
           label "Click Me!"
           opts {:subscribe-to-classes dynamic-classes
+                :id                   :sut
                 :active?              false
                 :on-click             clicker}
           b (sut/tab-button opts label)]

@@ -2,6 +2,7 @@
   :dependencies [[org.clojure/clojure "1.10.0-alpha8"]
                  [org.clojure/clojurescript "1.10.339"]
                  [org.clojure/test.check "0.10.0-alpha3"]
+                 [expound "0.7.1"]
                  [reagent "0.7.0"]
                  [re-frame "0.10.5"]
                  [secretary "1.2.3"]]

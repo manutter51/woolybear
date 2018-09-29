@@ -204,6 +204,21 @@
                result)
             "puts header above body and footer below body")))))
 
+(deftest bar-test
+  (testing "Options add correct classes"
+    (let [c (atom :foo)
+          r (sut/bar {:subscribe-to-classes c
+                      :extra-classes :bar} [:baz])]
+      (is (= [:div {:class "level wb-bar bar foo"} [:baz]]
+             (r {:subscribe-to-classes c
+                 :extra-classes :bar} [:baz]))
+          "all CSS classes rendered correctly on initial render")
+      (reset! c :other)
+      (is (= [:div {:class "level wb-bar bar other"} [:quux]]
+             (r {:subscribe-to-classes c
+                 :extra-classes :different} [:quux]))
+          "on render-time change, dynamic classes & child elements change, extra classes do not"))))
+
 (println "start local tests")
 (run-tests)
 (println "end local tests")
