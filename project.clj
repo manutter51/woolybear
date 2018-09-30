@@ -34,7 +34,7 @@
                    [re-frisk "0.5.3"]
                    [figwheel-sidecar "0.5.15"]]
 
-    :source-paths ["src/clj" "src/cljs" "ad-catalog" "scripts"]
+    :source-paths ["src/clj" "src/cljs" "scripts"]
 
     :plugins      [[lein-figwheel "0.5.16"]]}
    :prod {:dependencies [[day8.re-frame/tracing-stubs "0.5.1"]]
