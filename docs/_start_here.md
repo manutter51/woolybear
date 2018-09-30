@@ -12,3 +12,4 @@ actions are simulated.
 * [Best Practices](best_practices.md)
 * ***Tour de Code***
   * [Simple Static Components](../src/cljs/woolybear/ad/layout.cljs)
+  * [Interactive Containers](../src/cljs/woolybear/ad/containers.cljs)

@@ -32,7 +32,6 @@
     [:a {:href "#/"}
      "go to Home Page"]]])
 
-
 ;; main
 
 (defn- panels [panel-name]
