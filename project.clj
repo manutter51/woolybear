@@ -13,6 +13,7 @@
   :min-lein-version "2.5.3"
 
   :source-paths ["src/clj" "src/cljs"]
+  :resource-paths ["resources"]
   :test-paths ["test/cljs"]
 
   :sassc [{:src         "sass/woolybear.scss"
@@ -33,8 +34,11 @@
                    [re-frisk "0.5.3"]
                    [figwheel-sidecar "0.5.15"]]
 
+    :source-paths ["src/clj" "src/cljs" "ad-catalog" "scripts"]
+
     :plugins      [[lein-figwheel "0.5.16"]]}
-   :prod { :dependencies [[day8.re-frame/tracing-stubs "0.5.1"]]}
+   :prod {:dependencies [[day8.re-frame/tracing-stubs "0.5.1"]]
+          :source-paths ["src/clj" "src/cljs"]}
    }
 
   :cljsbuild
