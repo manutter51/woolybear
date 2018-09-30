@@ -25,6 +25,12 @@
                               :container
                               :is-size-1)} title-text])
 
+(defn section
+  "High-level block, designed to wrap and group a variety of other elements.
+  Centers content horizontally (space permitting)."
+  [& children]
+  (into [:div.section] children))
+
 (defn text-block
   "Simple container for one or more paragraphs of text. Automatically adds a
   1.5rem margin between itself and the next child element, unless it is the

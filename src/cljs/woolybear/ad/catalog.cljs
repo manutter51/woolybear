@@ -3,7 +3,8 @@
             [woolybear.ad.buttons :as buttons]
             [woolybear.ad.containers :as containers]
             [woolybear.ad.layout :as layout]
-            [woolybear.packs.tab-panel :as tab-panel]))
+            [woolybear.packs.tab-panel :as tab-panel]
+            [woolybear.ad.catalog.layouts :as layout-demo]))
 
 (defn page
   "Top-level AD Catalog page"
@@ -15,7 +16,7 @@
    [tab-panel/tab-panel {:extra-classes :ad-catalog}
     [tab-panel/sub-panel
      [buttons/tab-button "Layout"]
-     [layout/text-block "This is where the layout components will appear"]]
+     [layout-demo/catalog]]
     [tab-panel/sub-panel
      [buttons/tab-button "Containers"]
      [layout/text-block "This is where the container components will appear"]]

@@ -12,7 +12,7 @@
 
   :min-lein-version "2.5.3"
 
-  :source-paths ["src/clj" "src/cljs"]
+  :source-paths ["src/clj" "src/cljc" "src/cljs"]
   :resource-paths ["resources"]
   :test-paths ["test/cljs"]
 
