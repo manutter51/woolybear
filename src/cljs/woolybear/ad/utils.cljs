@@ -48,6 +48,12 @@
 ;; the :ad/active? option to either enable or disable it.
 (s/def :ad/active? boolean?)
 
+;; Some components have internal data that they need to track and manage
+;; without "manual intervention". The :subscribe-to-component-data
+;; option lets you tell the component what to subscribe to in order to
+;; retrieve its current state
+(s/def :ad/subscribe-to-component-data :ad/subscription)
+
 (defn extract-opts
   "Given a vector of arguments, checks to see if the first argument is a map of options.
   Returns a 2-element vector containing the options (if any) and a vector of the remaining
@@ -62,6 +68,32 @@
   (if (map? (first args))
     [(first args) (rest args)]
     [nil args]))
+
+(defn get-option
+  "Given a hiccup-style vector representing a DOM element, and a key,
+  return the value (if any) from the opts map of the element. Returns
+  woolybear.ad.utils/not-found if the key does not exist in the options."
+  [elem k]
+  (get (second elem) k ::not-found))
+
+(defn add-option
+  "Given a hiccup-style vector representing a DOM element, and a key/value pair,
+  add the k/v pair to the element's opts map, creating that map if needed"
+  [elem k v]
+  (let [[opts kids] (extract-opts (rest elem))
+        opts (or opts {})
+        result [(first elem) (assoc opts k v)]]
+    (into result kids)))
+
+(defn replace-children
+  "Given a hiccup-style vector representing a DOM element with an optional
+  opts map, and a list of new children, replace the element's children by
+  the new children, preserving any opts value that may be present."
+  [elem new-kids]
+  (let [[opts _] (extract-opts (rest elem))]
+    (if opts
+      (into [(first elem) opts] new-kids)
+      (into [(first elem)] new-kids))))
 
 (def function-type (type #()))
 (def always-nil (atom nil))
@@ -129,3 +161,8 @@
        (map to-name)
        (into #{})             ;; make css classes unique
        (string/join " ")))
+
+(def unique-id
+  (let [counter (atom 0)]
+    (fn []
+      (swap! counter inc))))

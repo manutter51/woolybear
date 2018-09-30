@@ -28,6 +28,9 @@
   (defroute "/about" []
     (re-frame/dispatch [::events/set-active-panel :about-panel]))
 
+  (defroute "/dev/ad-catalog" []
+    (re-frame/dispatch [::events/set-active-panel :ad-catalog-panel]))
+
 
   ;; --------------------
   (hook-browser-navigation!))

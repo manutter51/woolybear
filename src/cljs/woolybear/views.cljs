@@ -2,6 +2,7 @@
   (:require
    [re-frame.core :as re-frame]
    [woolybear.subs :as subs]
+   [woolybear.ad.catalog :as ad-catalog]
    ))
 
 
@@ -15,6 +16,9 @@
      [:div
       [:a {:href "#/about"}
        "go to About Page"]]
+     [:div
+      [:a {:href "#/dev/ad-catalog"}
+       "go to AD Catalog"]]
      ]))
 
 
@@ -35,6 +39,7 @@
   (case panel-name
     :home-panel [home-panel]
     :about-panel [about-panel]
+    :ad-catalog-panel [ad-catalog/page]
     [:div]))
 
 (defn show-panel [panel-name]

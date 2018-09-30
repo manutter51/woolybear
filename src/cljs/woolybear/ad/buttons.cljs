@@ -46,19 +46,28 @@
   :ret vector?)
 
 (s/def :tab-button/active? boolean?)
-(s/def :tab-button/options (s/keys :req-un [:button/on-click :tab-button/active?]
-                                   :opt-un [:button/subscribe-to-disabled?
+(s/def :tab-button/id keyword?)
+(s/def :tab-button/options (s/keys :req-un [:tab-button/id
+                                            :tab-button/active?]
+                                   :opt-un [:button/on-click
+                                            :button/subscribe-to-disabled?
                                             :ad/extra-classes
                                             :ad/subscribe-to-classes]))
 
 (defn tab-button
   "
   A button intended for use as part of a tab bar or tab-panel. Takes all the same
-  options as a regular button, plus an :active? option. Notice that :active? is a
-  direct boolean value rather than a subscription. The assumption here is that
-  each tab button will be part of a group of buttons managed by a parent container,
-  and the parent container will take care of managing which tab button is active.
+  options as a regular button, plus an :id keyword and an :active? option. Notice
+  that :active? is a direct boolean value rather than a subscription. The assumption
+  here is that each tab button will be part of a group of buttons managed by a
+  parent container, and the parent container will take care of managing which tab
+  button is active, using the :id value to track which button is active. Notice
+  too that the :on-click option is optional. When you define a tab button, you do
+  not specify an on-click handler, because it's going to be up to the parent to
+  handle the clicks. The parent will assign the on-click action when the tab-button
+  is mounted.
   "
+
   ;; We're re-implementing most of the functionality of button here because it makes
   ;; it simpler to work with the additional "tab-button" and "active" classes we
   ;; want to add when rendering the button. Also we need to manage the render-time
@@ -75,10 +84,13 @@
       (let [disabled? @disabled?-sub
             dynamic-classes @classes-sub
             attrs (cond-> {:on-click click-handler
-                           :class    (adu/css->str :wb-button :wb-tab-button (when active? :active)
+                           :class    (adu/css->str :wb-button :wb-tab-button
+                                                   (when active? #{:is-primary :active})
+                                                   :button
                                                    extra-classes dynamic-classes)}
                           disabled? (assoc :disabled "disabled"))]
-        (into [:button attrs] children)))))
+        [:div.level-item
+         (into [:button attrs] children)]))))
 
 (s/fdef tab-button
   :args (s/cat :opt :tab-button/options

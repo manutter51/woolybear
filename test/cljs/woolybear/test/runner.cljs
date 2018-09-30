@@ -5,8 +5,12 @@
             [expound.alpha :as expound]
             woolybear.test.utils
     ;; Now list all test ns's so they're loaded when tests run
+    ;; This has the happy side effect of running all tests whenever
+    ;; you make a change to a file that has related tests.
             woolybear.ad.buttons-test
-            woolybear.ad.containers-test))
+            woolybear.ad.containers-test
+            woolybear.packs.tab-panel-test
+            ))
 
 (def report-stats (atom {}))
 

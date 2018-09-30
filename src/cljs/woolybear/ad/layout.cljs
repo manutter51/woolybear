@@ -11,6 +11,20 @@
   (:require [re-frame.core :as re-frame]
             [woolybear.ad.utils :as adu]))
 
+(defn page
+  "Very top-level block, designed to wrap all other elements on the page, with the
+  exception of the page header and footer. Centers content horizontally (space
+  permitting)."
+  [& children]
+  (into [:div.container] children))
+
+(defn page-title
+  "Simple page title, designed to appear exactly once at the top of a page."
+  [title-text]
+  [:div {:class (adu/css->str :wb-page-title
+                              :container
+                              :is-size-1)} title-text])
+
 (defn text-block
   "Simple container for one or more paragraphs of text. Automatically adds a
   1.5rem margin between itself and the next child element, unless it is the
