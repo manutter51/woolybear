@@ -82,14 +82,16 @@
                 :on-click clicker}
           b (sut/tab-button opts label)]
       (is (= (wtu/realize-handlers
-               [:button {:on-click expected-click-handler
-                         :class    "wb-button wb-tab-button"} label])
+               [:div.level-item
+                [:button {:on-click expected-click-handler
+                          :class    "wb-button wb-tab-button button"} label]])
              (wtu/realize-handlers
                (b opts label)))
           "When active? is false, should render without 'active' CSS class")
       (is (= (wtu/realize-handlers
-               [:button {:on-click expected-click-handler
-                         :class    "wb-button wb-tab-button active"} label])
+               [:div.level-item
+                [:button {:on-click expected-click-handler
+                          :class    "wb-button wb-tab-button active is-primary button"} label]])
              (wtu/realize-handlers
                (b {:id       :sut
                    :active?  true
@@ -106,16 +108,18 @@
                 :on-click               clicker}
           b (sut/tab-button opts label)]
       (is (= (wtu/realize-handlers
-               [:button {:on-click expected-click-handler
-                         :class    "wb-button wb-tab-button"} label])
+               [:div.level-item
+                [:button {:on-click expected-click-handler
+                          :class    "wb-button wb-tab-button button"} label]])
              (wtu/realize-handlers
                (b opts label)))
           "Should not render 'disabled' attr when subscription value is false")
       (swap! disable not)
       (is (= (wtu/realize-handlers
-               [:button {:on-click expected-click-handler
-                         :disabled "disabled"
-                         :class    "wb-button wb-tab-button"} label])
+               [:div.level-item
+                [:button {:on-click expected-click-handler
+                          :disabled "disabled"
+                          :class    "wb-button wb-tab-button button"} label]])
              (wtu/realize-handlers
                (b opts label)))
           "Should render 'disabled' attr when subscription value is true")))
@@ -130,14 +134,16 @@
                 :on-click      clicker}
           b (sut/tab-button opts label)]
       (is (= (wtu/realize-handlers
-               [:button {:on-click expected-click-handler
-                         :class    "wb-button wb-tab-button foo"} label])
+               [:div.level-item
+                [:button {:on-click expected-click-handler
+                          :class    "wb-button wb-tab-button button foo"} label]])
              (wtu/realize-handlers
                (b opts label)))
           "Should add extra class to class attr")
       (is (= (wtu/realize-handlers
-               [:button {:on-click expected-click-handler
-                         :class    "wb-button wb-tab-button foo"} label])
+               [:div.level-item
+                [:button {:on-click expected-click-handler
+                          :class    "wb-button wb-tab-button button foo"} label]])
              (wtu/realize-handlers
                (b {:extra-classes :bar
                    :id            :sut
@@ -156,15 +162,17 @@
                 :on-click             clicker}
           b (sut/tab-button opts label)]
       (is (= (wtu/realize-handlers
-               [:button {:on-click expected-click-handler
-                         :class    "wb-button wb-tab-button foo"} label])
+               [:div.level-item
+                [:button {:on-click expected-click-handler
+                          :class    "wb-button wb-tab-button button foo"} label]])
              (wtu/realize-handlers
                (b opts label)))
           "Should add dynamic class to class attr")
       (swap! dynamic-classes conj :bar)
       (is (= (wtu/realize-handlers
-               [:button {:on-click expected-click-handler
-                         :class    "wb-button wb-tab-button foo bar"} label])
+               [:div.level-item
+                [:button {:on-click expected-click-handler
+                          :class    "wb-button wb-tab-button button foo bar"} label]])
              (wtu/realize-handlers
                (b opts label)))
           "If dynamic classes change at render time, should render updated classes"))))

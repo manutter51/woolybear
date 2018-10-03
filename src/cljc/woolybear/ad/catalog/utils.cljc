@@ -73,4 +73,6 @@
       ~(if notes#
          [:div.demo-notes notes#]
          "")
-      [woolybear.ad.catalog.utils/code-block ~src#]]))
+      [woolybear.ad.containers/spoiler {:show-label "Show Code"
+                                        :hide-label "Hide Code"}
+       [woolybear.ad.catalog.utils/code-block ~src#]]]))

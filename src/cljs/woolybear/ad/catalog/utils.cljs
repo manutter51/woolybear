@@ -19,7 +19,7 @@
 ;; and paste.
 
 (defn code-block
-  [& children]
-  (into [:textarea.code-block] children))
+  [code]
+  (into [:textarea.code-block {:value code}]))
 
 
