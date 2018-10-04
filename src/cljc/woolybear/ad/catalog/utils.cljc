@@ -69,7 +69,7 @@
                (parse (first children)))]
     `[:div.demo-container
       [:div.demo-name ~name]
-      [:div.demo-code ~@children#]
+      [:div.demo-display ~@children#]
       ~(if notes#
          [:div.demo-notes notes#]
          "")
