@@ -27,3 +27,7 @@ $family-sans-serif: Helvetica, Arial, sans-serif;
 
 @import "partials/effects";
 @import "partials/containers";
+@import "partials/tab-panel";
+
+// load last so it gets all of the above styles
+@import "partials/ad-catalog";

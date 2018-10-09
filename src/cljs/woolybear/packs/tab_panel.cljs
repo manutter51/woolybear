@@ -41,10 +41,12 @@
     (fn [& args]
       (let [[_ children] (adu/extract-opts args)
             dynamic-classes @classes-sub]
-        (into [:div {:class (adu/css->str :wb-tab-sub-panel
-                                          extra-classes
-                                          dynamic-classes)}]
-              children)))))
+        [:div {
+               :class (adu/css->str :wb-tab-sub-panel
+                                    extra-classes
+                                    dynamic-classes)}
+         (into [containers/v-scroll-pane {:height "100%"}]
+               children)]))))
 
 (s/fdef sub-panel
   :args (s/cat :opts (s/? :tab-sub-panel/options)

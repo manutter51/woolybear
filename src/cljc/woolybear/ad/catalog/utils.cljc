@@ -69,10 +69,10 @@
                (parse (first children)))]
     `[:div.demo-container
       [:div.demo-name ~name]
-      [:div.demo-display ~@children#]
       ~(if notes#
          [:div.demo-notes notes#]
          "")
+      [:div.demo-display ~@children#]
       [woolybear.ad.containers/spoiler {:show-label "Show Code"
                                         :hide-label "Hide Code"}
        [woolybear.ad.catalog.utils/code-block ~src#]]]))

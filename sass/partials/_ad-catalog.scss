@@ -1,0 +1,24 @@
+.ad-catalog {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+
+  &.wb-page {
+    overflow: auto;
+  }
+
+  &.wb-page-header {
+    height: 6rem;
+  }
+
+  &.wb-page-body {
+    position: inherit;
+    position: sticky;
+    overflow: auto;
+
+    .wb-tab-panel-tab-bar {
+      position: inherit;
+      position: sticky;
+    }
+  }
+}

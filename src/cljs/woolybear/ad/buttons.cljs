@@ -85,7 +85,7 @@
             dynamic-classes @classes-sub
             attrs (cond-> {:on-click click-handler
                            :class    (adu/css->str :wb-button :wb-tab-button
-                                                   (when active? #{:is-primary :active})
+                                                   (when active? :active)
                                                    :button
                                                    extra-classes dynamic-classes)}
                           disabled? (assoc :disabled "disabled"))]

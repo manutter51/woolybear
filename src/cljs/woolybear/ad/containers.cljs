@@ -99,29 +99,32 @@
     scroll-pane-footer :footer
     :body))
 
-(s/def :v-scroll-pane/options (s/keys :opt-un [:ad/extra-classes
+(s/def :v-scroll-pane/height string?)
+(s/def :v-scroll-pane/options (s/keys :req-un [:v-scroll-pane/height]
+                                      :opt-un [:ad/extra-classes
                                                :ad/subscribe-to-classes]))
 
 (defn v-scroll-pane
   "A component that sets overflow-y to auto so that if its contents exceed the
   component height, a scrollbar will appear. If any of the child elements are
   scroll-pane-header elements, and are not nested inside any other child elements,
-  it will be placed at the top, above the scrolling portion. Any scroll-pane-footer
-  child elements are similarly locked to the bottom of the scroll area. Accepts an
-  optional opts map as the first argument, with the following options:
+  they will be placed at the top, above the scrolling portion. Any scroll-pane-footer
+  child elements are similarly locked to the bottom of the scroll area. Requires an
+  options map as the first argument, with the following options. The :height option
+  is required and the others are optional.
 
+  * :height (required)    - standard css height value (e.g. 60vh)
   * :extra-classes        - static CSS classes to apply to the footer
   * :subscribe-to-classes - subscription to dynamic CSS classes to apply at runtime.
   "
-  [& args]
-  (let [[opts _] (adu/extract-opts args)
-        {:keys [extra-classes subscribe-to-classes]} opts
+  [opts & _]
+  (let [{:keys [height extra-classes subscribe-to-classes]} opts
         classes-sub (adu/subscribe-to subscribe-to-classes)]
-    (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
-            {:keys [header footer body]} (group-by get-header-footer-body-type children)
+    (fn [_ & children]
+      (let [{:keys [header footer body]} (group-by get-header-footer-body-type children)
             dynamic-classes @classes-sub]
-        (into [:div {:class (adu/css->str :wb-v-scroll-pane-container
+        (into [:div {:style {:height height}
+                     :class (adu/css->str :wb-v-scroll-pane-container
                                           extra-classes
                                           dynamic-classes)}]
               (remove nil?

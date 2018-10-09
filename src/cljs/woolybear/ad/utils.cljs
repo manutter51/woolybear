@@ -141,6 +141,18 @@
                   stopPropagation)]
         (handler handler e)))))
 
+(defn append-to-handler
+  "Given an event handler in the form of either a function or a re-frame event vector,
+  append the extra arguments to the handler in the appropriate way (`partial` for functions,
+  `conj` for vectors). Useful for components that have multiple child components where some
+  extra information needs to be added to each instance of the handler."
+  [handler & more]
+  (cond
+    (fn? handler) (apply partial handler more)
+    (vector? handler) (into handler more)
+    :else (throw (ex-info "First argument to append-to-handler must be a function or a vector."
+                          {:handler handler :more more}))))
+
 (defn- to-name
   "Given a value that may be a string, symbol, or keyword, return the
   name of the value, or the original value if it's not a symbol or keyword."

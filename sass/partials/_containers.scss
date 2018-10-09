@@ -15,7 +15,7 @@
   .demo-display {
     margin: 1rem;
     padding: 1rem;
-    border: 2px solid $grey-light;
+    border: 2px dashed lighten($cyan, 20%);
   }
 
   .wb-spoiler {
@@ -38,6 +38,7 @@
           border: 1px solid $grey-lighter;
           padding: 1rem;
           width: 100%;
+          min-height: 5rem;
           font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', monospace;
           font-size: 92%;
         }
@@ -48,4 +49,18 @@
 
 .hidden {
   display: none;
+}
+
+.wb-page {
+  margin: 1rem;
+}
+
+.wb-page-title {
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.wb-v-scroll-pane-container {
+  overflow-y: auto;
+  border: 1px solid $grey-light;
 }
