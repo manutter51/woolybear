@@ -1,4 +1,6 @@
-(ns woolybear.db)
+(ns woolybear.db
+  (:require [woolybear.ad.catalog :as ad-catalog]))
 
 (def default-db
-  {:name "re-frame"})
+  {:name "re-frame"
+   :ad-catalog ad-catalog/init-db})

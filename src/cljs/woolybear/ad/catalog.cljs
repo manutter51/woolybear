@@ -7,6 +7,28 @@
             [woolybear.packs.tab-panel :as tab-panel]
             [woolybear.ad.catalog.layouts :as layout-demo]))
 
+(def data-path [:ad-catalog :tab-panel])
+
+(def init-db
+  {:tab-panel (tab-panel/mk-tab-panel-data data-path)})
+
+(re-frame/reg-sub
+  :db/ad-catalog
+  (fn [db _]
+    (:ad-catalog db)))
+
+(re-frame/reg-sub
+  :ad-catalog/tab-panel
+  :<- [:db/ad-catalog]
+  (fn [ad-catalog]
+    (:tab-panel ad-catalog)))
+
+(re-frame/reg-sub
+  :tab-panel/selected-tab
+  :<- [:ad-catalog/tab-panel]
+  (fn [tab-panel]
+    (:value tab-panel)))
+
 (defn page
   "Top-level AD Catalog page"
   []
@@ -15,17 +37,21 @@
     [layout/page-title "AD Catalog"]
     [layout/text-block "Click a tab to see the Atomic Design components defined for that category."]]
 
-   [flex/flex-top {:debug true} [layout/page-title "Here's a flex-top, large style."]]
-
    [layout/page-body {:extra-classes :ad-catalog}
-    [tab-panel/tab-panel {:extra-classes :ad-catalog}
-     [tab-panel/sub-panel
-      [buttons/tab-button "Layout"]
+
+    [tab-panel/tab-bar {:extra-classes :ad-catalog
+                        :subscribe-to-component-data [:ad-catalog/tab-panel]}
+      [buttons/tab-button {:panel-id :demo/layouts} "Layout"]
+      [buttons/tab-button {:panel-id :demo/containers} "Containers"]
+      [buttons/tab-button {:panel-id :demo/buttons} "Buttons"]
+     ]
+
+    [tab-panel/tab-panel {:extra-classes :ad-catalog
+                          :subscribe-to-selected-tab [:tab-panel/selected-tab]}
+     [tab-panel/sub-panel {:panel-id :demo/layouts}
       [layout-demo/catalog]]
-     [tab-panel/sub-panel
-      [buttons/tab-button "Containers"]
+     [tab-panel/sub-panel {:panel-id :demo/containers}
       [layout/text-block "This is where the container components will appear"]]
-     [tab-panel/sub-panel
-      [buttons/tab-button "Buttons"]
+     [tab-panel/sub-panel {:panel-id :demo/buttons}
       [layout/text-block "This is where the button components will appear"]]
      ]]])

@@ -10,7 +10,7 @@
             [woolybear.ad.utils :as adu]))
 
 (s/def :button/subscribe-to-disabled? :ad/subscription)
-(s/def :button/on-click :ad/event-handler)
+(s/def :button/on-click :ad/event-dispatcher)
 
 (s/def :button/options (s/keys :req-un [:button/on-click]
                                :opt-un [:button/subscribe-to-disabled?
@@ -21,7 +21,7 @@
   "
   A simple button component that fires a specified event when clicked.
   Note that the opts argument is mandatory, since you must specify an
-  :on-click handler. You can also pass a :subscribe-to-disabled? option
+  :on-click dispatcher. You can also pass a :subscribe-to-disabled? option
   to dynamically enable/disable the button at runtime, and either (or
   both) of the :extra-classes and :subscribe-to-classes options to set
   additional CSS classes on the button.
@@ -31,11 +31,11 @@
                 extra-classes subscribe-to-classes]} opts
         disabled?-sub (adu/subscribe-to subscribe-to-disabled?)
         classes-sub (adu/subscribe-to subscribe-to-classes)
-        click-handler (adu/mk-handler on-click)]
+        click-dispatcher (adu/mk-dispatcher on-click)]
     (fn [_ & children]
       (let [disabled? @disabled?-sub
             dynamic-classes @classes-sub
-            attrs (cond-> {:on-click click-handler
+            attrs (cond-> {:on-click click-dispatcher
                            :class    (adu/css->str :wb-button extra-classes dynamic-classes)}
                           disabled? (assoc :disabled "disabled"))]
         (into [:button attrs] children)))))
@@ -46,8 +46,8 @@
   :ret vector?)
 
 (s/def :tab-button/active? boolean?)
-(s/def :tab-button/id keyword?)
-(s/def :tab-button/options (s/keys :req-un [:tab-button/id
+(s/def :tab-button/panel-id keyword?)
+(s/def :tab-button/options (s/keys :req-un [:tab-button/panel-id
                                             :tab-button/active?]
                                    :opt-un [:button/on-click
                                             :button/subscribe-to-disabled?
@@ -57,17 +57,12 @@
 (defn tab-button
   "
   A button intended for use as part of a tab bar or tab-panel. Takes all the same
-  options as a regular button, plus an :id keyword and an :active? option. Notice
+  options as a regular button, plus a :panel-id keyword and an :active? option. Notice
   that :active? is a direct boolean value rather than a subscription. The assumption
   here is that each tab button will be part of a group of buttons managed by a
   parent container, and the parent container will take care of managing which tab
-  button is active, using the :id value to track which button is active. Notice
-  too that the :on-click option is optional. When you define a tab button, you do
-  not specify an on-click handler, because it's going to be up to the parent to
-  handle the clicks. The parent will assign the on-click action when the tab-button
-  is mounted.
+  button is active, using the :panel-id value to track which button is active.
   "
-
   ;; We're re-implementing most of the functionality of button here because it makes
   ;; it simpler to work with the additional "tab-button" and "active" classes we
   ;; want to add when rendering the button. Also we need to manage the render-time
@@ -78,12 +73,12 @@
                 extra-classes subscribe-to-classes]} opts
         disabled?-sub (adu/subscribe-to subscribe-to-disabled?)
         classes-sub (adu/subscribe-to subscribe-to-classes)
-        click-handler (adu/mk-handler on-click)]
+        click-dispatcher (adu/mk-dispatcher on-click)]
     ;; we want the render-time value of the :active? opt, so we destructure it here.
     (fn [{:keys [active?]} & children]
       (let [disabled? @disabled?-sub
             dynamic-classes @classes-sub
-            attrs (cond-> {:on-click click-handler
+            attrs (cond-> {:on-click click-dispatcher
                            :class    (adu/css->str :wb-button :wb-tab-button
                                                    (when active? :active)
                                                    :button

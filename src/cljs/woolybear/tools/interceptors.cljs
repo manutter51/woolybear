@@ -11,8 +11,6 @@
   "Throws an exception if the handler returns nil as the value of the db. Catches a
   not-uncommon bug that produces some weird symptoms when undetected."
   (re-frame/after
-    (fn [context]
-      (let [db (get-in context [:effects :db])
-            handler-name (get-in context [:coeffects :event] "Unknown")]
-        (when (nil? db)
-          (throw (ex-info "Function handler returned nil" {:handler handler-name})))))))
+    (fn [db event]
+      (when (nil? db)
+        (throw (ex-info "Function handler returned nil" {:event event}))))))

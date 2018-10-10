@@ -187,14 +187,14 @@
         show-label (or show-label 'Show')
         hide-label (or hide-label 'Hide')
         classes-sub (adu/subscribe-to subscribe-to-classes)
-        click-handler (fn [_] (swap! visible? not))]
+        click-dispatcher (fn [_] (swap! visible? not))]
     (fn [& args]
       (let [[_ children] (adu/extract-opts args)
             visible? @visible?
             button-label (if visible? hide-label show-label)
             dynamic-classes @classes-sub]
         [:div.level {:class (adu/css->str :wb-spoiler extra-classes dynamic-classes)}
-         [:div.level-item-left [buttons/button {:on-click click-handler}
+         [:div.level-item-left [buttons/button {:on-click click-dispatcher}
                                 button-label]]
          [:div.level-item
           (into [shy-block {:active? visible?}] children)]]))))
