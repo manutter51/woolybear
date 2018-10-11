@@ -76,7 +76,7 @@
         (into [containers/bar {:extra-classes           (adu/css+css :wb-tab-bar extra-classes)
                                :ad/subscribe-to-classes subscribe-to-classes}]
               (for [button buttons :let [active? (= current-panel-id
-                                                    (adu/get-option button :tab-panel/panel-id))]]
+                                                    (adu/get-option button :panel-id))]]
                 (if active?
                   ^{:key (str "tab-bar-button-" (adu/get-option :key button) "-" active?)}
                   (adu/add-option button :active? true)
