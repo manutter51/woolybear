@@ -13,7 +13,6 @@ $size-3: 1.3rem;
 $size-4: 1.2rem;
 $size-5: 1.1rem;
 
-
 $family-sans-serif: Helvetica, Arial, sans-serif;
 
 $primary: $orange;
@@ -21,8 +20,6 @@ $primary: $orange;
 .button {
   font-weight: 800;
 }
-
-
 
 @import "bulma/sass/utilities/derived-variables";
 @import "bulma/bulma";

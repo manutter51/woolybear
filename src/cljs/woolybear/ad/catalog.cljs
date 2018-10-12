@@ -5,7 +5,8 @@
             [woolybear.ad.layout :as layout]
             [woolybear.packs.flex-panel :as flex]
             [woolybear.packs.tab-panel :as tab-panel]
-            [woolybear.ad.catalog.layouts :as layout-demo]))
+            [woolybear.ad.catalog.layouts :as layout-demo]
+            [woolybear.ad.catalog.containers :as containers-demo]))
 
 (def data-path [:ad-catalog :tab-panel])
 
@@ -48,10 +49,14 @@
 
     [tab-panel/tab-panel {:extra-classes :ad-catalog
                           :subscribe-to-selected-tab [:tab-panel/selected-tab]}
+
      [tab-panel/sub-panel {:panel-id :demo/layouts}
       [layout-demo/catalog]]
+
      [tab-panel/sub-panel {:panel-id :demo/containers}
-      [layout/text-block "This is where the container components will appear"]]
+      [containers-demo/catalog]]
+
      [tab-panel/sub-panel {:panel-id :demo/buttons}
       [layout/text-block "This is where the button components will appear"]]
+
      ]]])

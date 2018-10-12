@@ -138,3 +138,60 @@
                                           extra-classes
                                           dynamic-classes)}]
               children)))))
+
+(defn columns
+  "
+  Parent container for a multi-column layout. Expects all children to be
+  [layout/column] components. Supports standard :extra-classes and subscribe-to-classes
+  options.
+  "
+  [& args]
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+        classes-sub (adu/subscribe-to subscribe-to-classes)
+        ]
+    (fn [& args]
+      (let [[_ children] (adu/extract-opts args)
+            dynamic-classes @classes-sub]
+        (into [:div {:class (adu/css->str :columns
+                                          :wb-columns
+                                          extra-classes
+                                          dynamic-classes)}]
+              children)))))
+
+(defn column
+  "
+  Component for a single column inside a multi-column layout. Use inside a [layout/columns]
+  component. Supports standard :extra-classes and subscribe-to-classes options. Additional
+  column settings are available via CSS classes; see https://bulma.io/documentation/columns/sizes/
+  for details.
+  "
+  [& args]
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+        classes-sub (adu/subscribe-to subscribe-to-classes)
+        ]
+    (fn [& args]
+      (let [[_ children] (adu/extract-opts args)
+            dynamic-classes @classes-sub]
+        (into [:div {:class (adu/css->str :columns
+                                          :wb-columns
+                                          extra-classes
+                                          dynamic-classes)}]
+              children)))))
+
+(defn padded
+  "
+  Component with padding around all four sides, for use where extra white space is needed.
+  Supports standard :extra-classes and :subscribe-to-classes options.
+  "
+  [& args]
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+        classes-sub (adu/subscribe-to subscribe-to-classes)
+        ]
+    (fn [& args]
+      (let [[_ children] (adu/extract-opts args)
+            dynamic-classes @classes-sub
+            ]
+        (into [:div {:class (adu/css->str :wb-padded
+                                          extra-classes
+                                          dynamic-classes)}]
+              children)))))

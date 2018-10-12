@@ -15,7 +15,8 @@
   .demo-display {
     margin: 1rem;
     padding: 1rem;
-    border: 2px dashed lighten($cyan, 20%);
+    border: 2px dashed lighten($orange, 20%);
+    background: lighten($orange, 38%)
   }
 
   .wb-spoiler {
@@ -60,7 +61,12 @@
   font-weight: 600;
 }
 
-.wb-v-scroll-pane-container {
+.wb-v-scroll-pane-overflow {
   overflow-y: auto;
   border: 1px solid $grey-light;
+  height: 100%;
+}
+
+.wb-padded {
+  padding: 1rem;
 }

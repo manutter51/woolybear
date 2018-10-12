@@ -14,7 +14,7 @@
 
 (defn shy-block
   "A container that may or may not be visible, depending on the current value of
-  its `visible?` subscription. If you wish you can pass in extra CSS classes via
+  its `active?` subscription. If you wish you can pass in extra CSS classes via
   the :extra-classes option. For extra classes that change dynamically at run-time,
   pass in :subscribe-to-classes instead."
   [opts & _]
@@ -123,14 +123,13 @@
     (fn [_ & children]
       (let [{:keys [header footer body]} (group-by get-header-footer-body-type children)
             dynamic-classes @classes-sub]
-        (into [:div {:style {:height height}
-                     :class (adu/css->str :wb-v-scroll-pane-container
+        (into [:div {:class (adu/css->str :wb-v-scroll-pane-container
                                           extra-classes
                                           dynamic-classes)}]
               (remove nil?
                       [(when header
                          (into [:div.wb-v-scroll-pane-header] header))
-                       (into [:div.wb-v-scroll-pane-overflow] body)
+                       (into [:div.wb-v-scroll-pane-overflow {:style {:height height}}] body)
                        (when footer
                          (into [:div.wb-v-scroll-pane-footer] footer))]))))))
 
