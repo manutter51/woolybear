@@ -45,6 +45,8 @@
                :children (s/+ any?))
   :ret vector?)
 
+;; TODO make buttons for ok-default, save-default, cancel
+
 (s/def :tab-button/active? boolean?)
 (s/def :tab-button/panel-id keyword?)
 (s/def :tab-button/options (s/keys :req-un [:tab-button/panel-id

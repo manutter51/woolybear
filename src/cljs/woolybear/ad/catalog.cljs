@@ -11,7 +11,7 @@
 (def data-path [:ad-catalog :tab-panel])
 
 (def init-db
-  {:tab-panel (tab-panel/mk-tab-panel-data data-path)})
+  {:tab-panel (tab-panel/mk-tab-panel-data data-path :demo/layouts)})
 
 (re-frame/reg-sub
   :db/ad-catalog

@@ -14,8 +14,8 @@
   "
   Set up the data map for a tab-panel/tab-bar combination.
   "
-  [path-in-db]
-  {:value     nil
+  [path-in-db & [default-value]]
+  {:value     default-value
    :data-path path-in-db})
 
 ;;; Event Handlers

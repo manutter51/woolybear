@@ -5,13 +5,13 @@
             [woolybear.ad.catalog.utils :as acu]
             [woolybear.ad.layout :as layout]
             [woolybear.ad.containers :as containers]
-            [woolybear.ad.buttons :as buttons]))
+            [woolybear.ad.buttons :as buttons]
+            [woolybear.packs.flex-panel :as flex]))
 
 (defn shy-block-demo
   []
   (let [shy-block-active? (ratom/atom true)
         click-dispatcher (fn [_]
-                           (prn {:old-value @shy-block-active?})
                            (swap! shy-block-active? not))]
     (fn []
       (let [active? @shy-block-active?]
@@ -44,6 +44,7 @@
       [layout/text-block acu/lorem]
       [layout/text-block acu/lorem]
       [layout/text-block acu/lorem]]
+
      '[containers/v-scroll-pane {:height "12rem"}
        [containers/scroll-pane-header "This line does not scroll."]
        [containers/scroll-pane-footer "This line also does not scroll"]
@@ -56,9 +57,28 @@
      is true. Used as a sub-component of other components such as the 'spoiler'
      panel. Takes standard :extra-classes and :subscribe-to-classes options."
      [shy-block-demo]
+
      '[layout/frame
        [buttons/button {:on-click click-dispatcher} "Toggle Visibility"]
        [containers/shy-block {:active? active?}
         [layout/text-block acu/lorem]]])
+
+   (acu/demo "Flex panel"
+     "A flex panel is designed primarily to implement a container that fills the
+     entire viewport, with a scrolling content section between an (optional) flex-top
+     and/or flex-bottom component. Specify the :height as 100vh to fill the entire
+     screen, or use any valid CSS height specification to set a different size."
+     [flex/flex-panel {:height "33vh"}
+      [flex/flex-top "This line should be fixed to the top of the flex panel."]
+      [flex/flex-bottom "This line should be fixed to the bottom of the flex panel."]
+      [layout/text-block acu/lorem]
+      [layout/text-block acu/lorem]
+      [layout/text-block acu/lorem]]
+     '[flex/flex-panel {:height "33vh"}
+       [flex/flex-top "This line should be fixed to the top of the flex panel."]
+       [flex/flex-bottom "This line should be fixed to the bottom of the flex panel."]
+       [layout/text-block acu/lorem]
+       [layout/text-block acu/lorem]
+       [layout/text-block acu/lorem]])
 
    ])

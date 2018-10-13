@@ -14,7 +14,8 @@
   components.
   "
   (:require [re-frame.core :as re-frame]
-            [woolybear.ad.utils :as adu]))
+            [woolybear.ad.utils :as adu]
+            [cljs.spec.alpha :as s]))
 
 (defn page
   "
@@ -34,6 +35,12 @@
                                           dynamic-classes)}]
               children)))))
 
+(s/fdef page
+  :args (s/cat :opts (s/keys :opt-un [:ad/extra-classes
+                                      :ad/subscribe-to-classes])
+               :children (s/+ any?))
+  :ret vector?)
+
 (defn page-header
   "
   Section that appears only in the upper portion of the page. Contains page
@@ -51,6 +58,12 @@
                                           dynamic-classes)}]
               children)))))
 
+(s/fdef page-header
+  :args (s/cat :opts (s/keys :opt-un [:ad/extra-classes
+                                      :ad/subscribe-to-classes])
+               :children (s/+ any?))
+  :ret vector?)
+
 (defn page-title
   "
   Simple page title, designed to appear exactly once at the top of a page.
@@ -67,6 +80,12 @@
                                     extra-classes
                                     dynamic-classes)}
          children]))))
+
+(s/fdef page-title
+  :args (s/cat :opts (s/keys :opt-un [:ad/extra-classes
+                                      :ad/subscribe-to-classes])
+               :children (s/+ any?))
+  :ret vector?)
 
 (defn page-body
   "
@@ -86,6 +105,12 @@
                                           dynamic-classes)}]
               children)))))
 
+(s/fdef page-body
+  :args (s/cat :opts (s/keys :opt-un [:ad/extra-classes
+                                      :ad/subscribe-to-classes])
+               :children (s/+ any?))
+  :ret vector?)
+
 (defn section
   "
   High-level block, designed to wrap and group a variety of other elements.
@@ -103,6 +128,12 @@
                                           extra-classes
                                           dynamic-classes)}]
               children)))))
+
+(s/fdef section
+  :args (s/cat :opts (s/keys :opt-un [:ad/extra-classes
+                                      :ad/subscribe-to-classes])
+               :children (s/+ any?))
+  :ret vector?)
 
 (defn text-block
   "
@@ -122,6 +153,12 @@
                                           dynamic-classes)}]
               children)))))
 
+(s/fdef text-block
+  :args (s/cat :opts (s/keys :opt-un [:ad/extra-classes
+                                      :ad/subscribe-to-classes])
+               :children (s/+ any?))
+  :ret vector?)
+
 (defn frame
   "
   Encloses contents inside a frame with rounded corners and a slight drop
@@ -138,6 +175,12 @@
                                           extra-classes
                                           dynamic-classes)}]
               children)))))
+
+(s/fdef frame
+  :args (s/cat :opts (s/keys :opt-un [:ad/extra-classes
+                                      :ad/subscribe-to-classes])
+               :children (s/+ any?))
+  :ret vector?)
 
 (defn columns
   "
@@ -157,6 +200,12 @@
                                           extra-classes
                                           dynamic-classes)}]
               children)))))
+
+(s/fdef columns
+  :args (s/cat :opts (s/keys :opt-un [:ad/extra-classes
+                                      :ad/subscribe-to-classes])
+               :children (s/+ any?))
+  :ret vector?)
 
 (defn column
   "
@@ -178,6 +227,12 @@
                                           dynamic-classes)}]
               children)))))
 
+(s/fdef column
+  :args (s/cat :opts (s/keys :opt-un [:ad/extra-classes
+                                      :ad/subscribe-to-classes])
+               :children (s/+ any?))
+  :ret vector?)
+
 (defn padded
   "
   Component with padding around all four sides, for use where extra white space is needed.
@@ -195,3 +250,21 @@
                                           extra-classes
                                           dynamic-classes)}]
               children)))))
+
+(s/fdef padded
+  :args (s/cat :opts (s/keys :opt-un [:ad/extra-classes
+                                      :ad/subscribe-to-classes])
+               :children (s/+ any?))
+  :ret vector?)
+
+(defn zero-pad
+  "
+  A component with zero padding and zero margin. Used to group components without adding
+  any additional width or height. Does not take any options.
+  "
+  [& children]
+  (into [:div.wb-zero-pad] children))
+
+(s/fdef zero-pad
+  :args (s/cat :children (s/+ any?))
+  :ret vector?)

@@ -113,14 +113,14 @@
   options map as the first argument, with the following options. The :height option
   is required and the others are optional.
 
-  * :height (required)    - standard css height value (e.g. 60vh)
+  * :height (required)    - standard CSS height value (e.g. 60vh)
   * :extra-classes        - static CSS classes to apply to the footer
   * :subscribe-to-classes - subscription to dynamic CSS classes to apply at runtime.
   "
   [opts & _]
-  (let [{:keys [height extra-classes subscribe-to-classes]} opts
+  (let [{:keys [extra-classes subscribe-to-classes]} opts
         classes-sub (adu/subscribe-to subscribe-to-classes)]
-    (fn [_ & children]
+    (fn [{:keys [height]} & children]
       (let [{:keys [header footer body]} (group-by get-header-footer-body-type children)
             dynamic-classes @classes-sub]
         (into [:div {:class (adu/css->str :wb-v-scroll-pane-container
@@ -129,6 +129,7 @@
               (remove nil?
                       [(when header
                          (into [:div.wb-v-scroll-pane-header] header))
+                       ^{:key (str "v-scroll-pane-overflow-" height)}
                        (into [:div.wb-v-scroll-pane-overflow {:style {:height height}}] body)
                        (when footer
                          (into [:div.wb-v-scroll-pane-footer] footer))]))))))
