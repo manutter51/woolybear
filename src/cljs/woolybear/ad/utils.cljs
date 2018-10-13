@@ -137,10 +137,9 @@
   [dispatcher]
   (let [dispatcher (mk-dispatcher dispatcher)]
     (fn [e]
-      (let [e (.. e
-                  preventDefault
-                  stopPropagation)]
-        (dispatcher dispatcher e)))))
+      (.preventDefault e)
+      (.stopPropagation e)
+      (dispatcher dispatcher e))))
 
 (defn append-to-dispatcher
   "Given an event dispatcher in the form of either a function or a re-frame event vector,

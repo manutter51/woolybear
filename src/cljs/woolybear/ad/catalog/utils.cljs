@@ -35,9 +35,9 @@
 
 (defn pp-map
   [m prefix]
-  (let [prefix (str prefix " ")]
+  (let [short-prefix (apply str (butlast prefix))]
     (string/trimr (reduce (fn [result [k v]]
-                            (str result k " " (pps v prefix) \newline prefix))
+                            (str result k " " (pps v prefix) \newline short-prefix))
                           ""
                           m))))
 

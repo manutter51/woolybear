@@ -6,7 +6,8 @@
             [woolybear.packs.flex-panel :as flex]
             [woolybear.packs.tab-panel :as tab-panel]
             [woolybear.ad.catalog.layouts :as layout-demo]
-            [woolybear.ad.catalog.containers :as containers-demo]))
+            [woolybear.ad.catalog.containers :as containers-demo]
+            [woolybear.ad.catalog.icons :as icons-demo]))
 
 (def data-path [:ad-catalog :tab-panel])
 
@@ -44,6 +45,7 @@
                          :subscribe-to-component-data [:ad-catalog/tab-panel]}
       [buttons/tab-button {:panel-id :demo/layouts} "Layout"]
       [buttons/tab-button {:panel-id :demo/containers} "Containers"]
+      [buttons/tab-button {:panel-id :demo/icons} "Icons"]
       [buttons/tab-button {:panel-id :demo/buttons} "Buttons"]
       ]]
 
@@ -56,6 +58,9 @@
 
       [tab-panel/sub-panel {:panel-id :demo/containers}
        [containers-demo/catalog]]
+
+      [tab-panel/sub-panel {:panel-id :demo/icons}
+       [icons-demo/catalog]]
 
       [tab-panel/sub-panel {:panel-id :demo/buttons}
        [layout/text-block "This is where the button components will appear"]]
