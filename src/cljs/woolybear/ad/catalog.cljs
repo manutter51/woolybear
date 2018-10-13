@@ -34,29 +34,30 @@
   "Top-level AD Catalog page"
   []
   [layout/page {:extra-classes :ad-catalog}
-   [layout/page-header {:extra-classes :ad-catalog}
-    [layout/page-title "AD Catalog"]
-    [layout/text-block "Click a tab to see the Atomic Design components defined for that category."]]
+   [flex/flex-panel {:height "calc(100vh - 2rem)"}
+    [flex/flex-top
+     [layout/page-header {:extra-classes :ad-catalog}
+      [layout/page-title "AD Catalog"]
+      [layout/text-block "Click a tab to see the Atomic Design components defined for that category."]]
 
-   [layout/page-body {:extra-classes :ad-catalog}
-
-    [tab-panel/tab-bar {:extra-classes :ad-catalog
-                        :subscribe-to-component-data [:ad-catalog/tab-panel]}
+     [tab-panel/tab-bar {:extra-classes               :ad-catalog
+                         :subscribe-to-component-data [:ad-catalog/tab-panel]}
       [buttons/tab-button {:panel-id :demo/layouts} "Layout"]
       [buttons/tab-button {:panel-id :demo/containers} "Containers"]
       [buttons/tab-button {:panel-id :demo/buttons} "Buttons"]
-     ]
+      ]]
 
-    [tab-panel/tab-panel {:extra-classes :ad-catalog
-                          :subscribe-to-selected-tab [:tab-panel/selected-tab]}
+    [layout/page-body {:extra-classes :ad-catalog}
+     [tab-panel/tab-panel {:extra-classes             :ad-catalog
+                           :subscribe-to-selected-tab [:tab-panel/selected-tab]}
 
-     [tab-panel/sub-panel {:panel-id :demo/layouts}
-      [layout-demo/catalog]]
+      [tab-panel/sub-panel {:panel-id :demo/layouts}
+       [layout-demo/catalog]]
 
-     [tab-panel/sub-panel {:panel-id :demo/containers}
-      [containers-demo/catalog]]
+      [tab-panel/sub-panel {:panel-id :demo/containers}
+       [containers-demo/catalog]]
 
-     [tab-panel/sub-panel {:panel-id :demo/buttons}
-      [layout/text-block "This is where the button components will appear"]]
+      [tab-panel/sub-panel {:panel-id :demo/buttons}
+       [layout/text-block "This is where the button components will appear"]]
 
-     ]]])
+      ]]]])

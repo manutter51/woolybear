@@ -85,7 +85,6 @@
   "
   [opts & children]
   (let [{:keys [height]} opts]
-    (prn {:flex-content-height height})
     (into [containers/v-scroll-pane {:height height}] children)))
 
 (s/fdef flex-content
@@ -111,9 +110,7 @@
         target (first targets)]
     (when target
       (adu/add-option target :on-size-change (fn [h]
-                                               (reset! height-atom h)
-                                               (prn {:component  target-component-type
-                                                     :new-height @height-atom}))))))
+                                               (reset! height-atom h))))))
 
 (defn flex-panel
   "
@@ -134,8 +131,7 @@
         size-change-handler (fn [comp]
                               (reset! flex-height (-> comp
                                                       (reagent/dom-node)
-                                                      .-offsetHeight))
-                              (prn {:main-flex-height-set @flex-height}))
+                                                      .-offsetHeight)))
         render-fn (fn [& args]
                     (let [[_ children] (adu/extract-opts args)
                           flex-contents (filter #(= :other (flex-type %)) children)
@@ -144,10 +140,6 @@
                           dynamic-classes @classes-sub
                           content-height (- @flex-height (+ @flex-top-height @flex-bottom-height))
                           content-height (str content-height "px")]
-                      (cljs.pprint/pprint {:dynamic-content-height content-height
-                                           :flex-height            @flex-height
-                                           :flex-top-height        @flex-top-height
-                                           :flex-bottom-height     @flex-bottom-height})
                       [:div {:style {:height height}
                              :class (adu/css->str :wb-flex-panel
                                                   extra-classes
