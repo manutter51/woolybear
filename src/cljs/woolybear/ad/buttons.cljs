@@ -6,6 +6,7 @@
   dynamic 'disabled' attribute.
   "
   (:require [re-frame.core :as re-frame]
+            [reagent.ratom :as ratom]
             [cljs.spec.alpha :as s]
             [woolybear.ad.utils :as adu]))
 
@@ -149,15 +150,14 @@
                :children (s/+ any?))
   :ret vector?)
 
-(s/def :toggle/on? :boolean?)
+(s/def :toggle/on? boolean?)
 (s/def :toggle/subscribe-to-on? :ad/subscription)
 (s/def :toggle/class-for-on keyword?)
 (s/def :toggle/class-for-off (s/nilable keyword?))
 (s/def :toggle/on-click :ad/event-dispatcher)
 
 (s/def :toggle/options (s/keys :req-un [:toggle/on-click]
-                               :opt-un [:toggle/on?
-                                        :toggle/subscribe-to-on?
+                               :opt-un [:toggle/subscribe-to-on?
                                         :toggle/class-for-on
                                         :toggle/class-for-off]))
 
@@ -170,21 +170,22 @@
   class-for-off CSS class, if any.
   "
   [opts & _]
-  (let [{:keys [subscribe-to-on?]} opts
-        on?-sub (adu/subscribe-to subscribe-to-on?)]
+  (let [{:keys [subscribe-to-on? subscribe-to-classes]} opts
+        on?-sub (adu/subscribe-to subscribe-to-on?)
+        classes-sub (adu/subscribe-to subscribe-to-classes)
+        button-classes-state (ratom/atom nil)]
     (fn [opts & children]
       ;; Note: required :on-click option passes thru to base button component.
-      (let [{:keys [on? class-for-on class-for-off]} opts
-            ;; both on? and ?on-sub could have nil values meaning "not on"
-            ;; but both could also have nil values meaning "not used". We
-            ;; need to see if subscribe-to-on? is nil -- if it is, use on? else use on?-sub
-            on? (if (nil? subscribe-to-on?) on? @on?-sub)
-            extra-classes (:extra-classes opts)
-            extra-classes (cond
-                            on? (adu/css+css extra-classes #{:wb-toggle-button class-for-on})
-                            (nil? class-for-off) (adu/css+css extra-classes :wb-toggle-button)
-                            :else (adu/css+css extra-classes #{:wb-toggle-button class-for-off}))]
-        (into [button (assoc opts :extra-classes extra-classes)] children)))))
+      (let [{:keys [class-for-on class-for-off]} opts
+            on? @on?-sub
+            dynamic-classes @classes-sub
+            button-classes (cond
+                             on? (adu/css+css dynamic-classes #{:wb-toggle-button class-for-on})
+                             (nil? class-for-off) (adu/css+css dynamic-classes :wb-toggle-button)
+                             :else (adu/css+css dynamic-classes #{:wb-toggle-button class-for-off}))]
+        (reset! button-classes-state button-classes)
+        ^{:key (str "toggle-button-" (if on? "on" "off") (pr-str children))}
+        (into [button (assoc opts :subscribe-to-classes button-classes-state)] children)))))
 
 (s/fdef toggle-button
   :args (s/cat :opt :toggle-button/options
