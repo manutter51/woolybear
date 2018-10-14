@@ -36,7 +36,7 @@
       (let [disabled? @disabled?-sub
             dynamic-classes @classes-sub
             attrs (cond-> {:on-click click-dispatcher
-                           :class    (adu/css->str :wb-button extra-classes dynamic-classes)}
+                           :class    (adu/css->str :button :wb-button extra-classes dynamic-classes)}
                           disabled? (assoc :disabled "disabled"))]
         (into [:button attrs] children)))))
 
@@ -45,7 +45,62 @@
                :children (s/+ any?))
   :ret vector?)
 
-;; TODO make buttons for ok-default, save-default, cancel
+(defn ok-button
+  [opts & children]
+  (let [extra-classes (adu/css+css (:extra-classes opts) #{:wb-ok-button :is-primary})
+        label (or children ["OK"])]
+    (into [button (assoc opts :extra-classes extra-classes)] label)))
+
+(s/fdef ok-button
+  :args (s/cat :opt :button/options
+               :children (s/* any?))
+  :ret vector?)
+
+(defn save-button
+  [opts & children]
+  (let [extra-classes (adu/css+css (:extra-classes opts) #{:wb-save-button :is-primary})
+        label (or children ["Save"])]
+    (into [button (assoc opts :extra-classes extra-classes)] label)))
+
+(s/fdef save-button
+  :args (s/cat :opt :button/options
+               :children (s/* any?))
+  :ret vector?)
+
+(defn delete-button
+  [opts & children]
+  (let [extra-classes (adu/css+css (:extra-classes opts) #{:wb-delete-button :is-danger})
+        label (or children ["Delete"])]
+    (into [button (assoc opts :extra-classes extra-classes)] label)))
+
+(s/fdef delete-button
+  :args (s/cat :opt :button/options
+               :children (s/* any?))
+  :ret vector?)
+
+(defn cancel-button
+  [opts & children]
+  (let [extra-classes (:extra-classes opts)
+        extra-classes (adu/css+css extra-classes :wb-cancel-button)
+        label (or children ["Cancel"])]
+    (into [button opts] label)))
+
+(s/fdef cancel-button
+  :args (s/cat :opt :button/options
+               :children (s/* any?))
+  :ret vector?)
+
+(defn close-button
+  "Button with an X in it, for use as a close button"
+  [opts]
+  (let [extra-classes (:extra-classes opts)
+        extra-classes (adu/css+css extra-classes :wb-close-button)]
+    [button (assoc opts :extra-classes extra-classes) "✖︎"]))
+
+(s/fdef close-button
+  :args (s/cat :opts :button/button-config)
+  :ret vector?)
+
 
 (s/def :tab-button/active? boolean?)
 (s/def :tab-button/panel-id keyword?)
@@ -93,4 +148,49 @@
   :args (s/cat :opt :tab-button/options
                :children (s/+ any?))
   :ret vector?)
+
+(s/def :toggle/on? :boolean?)
+(s/def :toggle/subscribe-to-on? :ad/subscription)
+(s/def :toggle/class-for-on keyword?)
+(s/def :toggle/class-for-off (s/nilable keyword?))
+(s/def :toggle/on-click :ad/event-dispatcher)
+
+(s/def :toggle/options (s/keys :req-un [:toggle/on-click]
+                               :opt-un [:toggle/on?
+                                        :toggle/subscribe-to-on?
+                                        :toggle/class-for-on
+                                        :toggle/class-for-off]))
+
+(defn toggle-button
+  "
+  A button that has different appearances depending on whether it is \"on\" or \"off\".
+  This is a wrapper component for the base button component that uses the value of :on?
+  or :subscribe-to-on? in order to (possibly) add a CSS class to the :extra-classes option.
+  If the button is :on?, adds the :class-for-on CSS class, otherwise adds the optional
+  class-for-off CSS class, if any.
+  "
+  [opts & _]
+  (let [{:keys [subscribe-to-on?]} opts
+        on?-sub (adu/subscribe-to subscribe-to-on?)]
+    (fn [opts & children]
+      ;; Note: required :on-click option passes thru to base button component.
+      (let [{:keys [on? class-for-on class-for-off]} opts
+            ;; both on? and ?on-sub could have nil values meaning "not on"
+            ;; but both could also have nil values meaning "not used". We
+            ;; need to see if subscribe-to-on? is nil -- if it is, use on? else use on?-sub
+            on? (if (nil? subscribe-to-on?) on? @on?-sub)
+            extra-classes (:extra-classes opts)
+            extra-classes (cond
+                            on? (adu/css+css extra-classes #{:wb-toggle-button class-for-on})
+                            (nil? class-for-off) (adu/css+css extra-classes :wb-toggle-button)
+                            :else (adu/css+css extra-classes #{:wb-toggle-button class-for-off}))]
+        (into [button (assoc opts :extra-classes extra-classes)] children)))))
+
+(s/fdef toggle-button
+  :args (s/cat :opt :toggle-button/options
+               :children (s/+ any?))
+  :ret vector?)
+
+
+
 

@@ -1,0 +1,19 @@
+.button.wb-button {
+  cursor: pointer;
+
+  span.icon,
+  span.icon:first-child:last-child {
+    margin: 0 0.5rem;
+    vertical-align: middle;
+    font-size: 100%
+  }
+
+  &.wb-close-button {
+    font-size: 100%;
+    border-radius: 1.5rem;
+    background: #333333;
+    color: #dddddd;
+    padding: 0px 0.25rem;
+    height: 1.5rem;
+  }
+}

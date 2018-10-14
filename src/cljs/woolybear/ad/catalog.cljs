@@ -7,7 +7,8 @@
             [woolybear.packs.tab-panel :as tab-panel]
             [woolybear.ad.catalog.layouts :as layout-demo]
             [woolybear.ad.catalog.containers :as containers-demo]
-            [woolybear.ad.catalog.icons :as icons-demo]))
+            [woolybear.ad.catalog.icons :as icons-demo]
+            [woolybear.ad.catalog.buttons :as buttons-demo]))
 
 (def data-path [:ad-catalog :tab-panel])
 
@@ -63,6 +64,6 @@
        [icons-demo/catalog]]
 
       [tab-panel/sub-panel {:panel-id :demo/buttons}
-       [layout/text-block "This is where the button components will appear"]]
+       [buttons-demo/catalog]]
 
       ]]]])
