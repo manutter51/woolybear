@@ -82,8 +82,9 @@
 (defn mk-dispatchers
   "Given a component-data-path and a map with the keys :on-enter-key, :on-escape-key, and :on-change,
   return a map with each of those keys mapped to a dispatcher function suitable for use in text-input,
-  select-input, and so on."
-  [component-data-path {:keys [on-enter-key on-escape-key on-change]}]
+  select-input, and so on. Note that this us used for select-input as well as text-input, so we need
+  to check for the :multiple? option in the on-change handler."
+  [component-data-path {:keys [on-enter-key on-escape-key on-change multiple?]}]
   (let [path component-data-path ;; alias for convenience
         on-key-dispatchers (cond-> {}
                                    on-enter-key (assoc "Enter"
@@ -94,13 +95,14 @@
                                  (adu/mk-keydown-dispatcher on-key-dispatchers))
         change-dispatcher* (when on-change
                              (adu/mk-dispatcher (adu/append-to-dispatcher on-change component-data-path)))
+        event-key (if multiple? :multi-select/change :form-field/change)
         change-dispatcher (if change-dispatcher*
                             (fn [e]
-                              (re-frame/dispatch [:form-field/change component-data-path (adu/js-event-val e)])
+                              (re-frame/dispatch [event-key component-data-path (adu/js-event-val e)])
                               (change-dispatcher* e))
                             ;; else
                             (fn [e]
-                              (re-frame/dispatch [:form-field/change component-data-path (adu/js-event-val e)])))]
+                              (re-frame/dispatch [event-key component-data-path (adu/js-event-val e)])))]
     (cond-> {:on-change change-dispatcher}
             on-key-down-dispatcher (assoc :on-key-down on-key-down-dispatcher))))
 
@@ -163,6 +165,23 @@
   :form-field/change
   handle-form-field-change)
 
+(defn handle-multi-select-change
+  "Handler function for the :multi-select/change event. Updates the :value key in
+  the field data map, allowing for multiple selections. Takes the path to the component
+  to update, and the new value to toggle in or out of the set of selected options."
+  [db [_ path change-val]]
+  (if (seq change-val)
+    (let [current-selection (into #{} (:value (get-in db path)))
+          new-selection (if (current-selection change-val)
+                          (disj current-selection change-val)
+                          (conj current-selection change-val))]
+      (update-in db path assoc :value (into [] new-selection)))
+    db))
+
+(re-frame/reg-event-db
+  :multi-select/change
+  handle-multi-select-change)
+
 ;;;
 ;;; Form field components
 ;;;
@@ -223,7 +242,7 @@
   "Utility function just to keep text-input from getting too big. Builds the component
   attributes map given the options."
   [opts]
-  (let [{:keys [component-data-path id name type placeholder autofocus? on-change]} opts
+  (let [{:keys [component-data-path id name type placeholder autofocus?]} opts
         type (or type :text)  ;; set default value for optional :text key
         dispatchers (mk-dispatchers component-data-path opts)]
     (cond-> (merge dispatchers {:type type})
@@ -337,7 +356,7 @@
 
 (defn- get-select-input-attribs
   [opts]
-  (let [{:keys [component-data-path id name autofocus? multiple? size on-change]} opts
+  (let [{:keys [component-data-path id name autofocus? multiple? size]} opts
         dispatchers (mk-dispatchers component-data-path opts)]
     (cond-> dispatchers
             id (assoc :id id)
@@ -383,12 +402,13 @@
   "
   [opts]
   (let [{:keys [extra-classes subscribe-to-classes subscribe-to-option-items subscribe-to-disabled?
-                component-data-path subscribe-to-component-data default none-value get-label-fn
-                get-value-fn]} opts
+                component-data-path subscribe-to-component-data default none-value multiple?
+                get-label-fn get-value-fn]} opts
         classes-sub (adu/subscribe-to subscribe-to-classes)
         option-items-sub (adu/subscribe-to subscribe-to-option-items)
         disabled?-sub (adu/subscribe-to subscribe-to-disabled?)
         component-data-sub (adu/subscribe-to subscribe-to-component-data)
+        default (or default (if multiple? [] ""))
         get-label-fn (if (fn? get-label-fn)
                        get-label-fn
                        (fn [item]
@@ -403,7 +423,7 @@
 
     (fn [_]
       (let [{:keys [value]} @component-data-sub
-            value (or value "")
+            value (or value (if multiple? [] ""))
             dynamic-classes @classes-sub
             option-items @option-items-sub
             disabled? @disabled?-sub
@@ -413,12 +433,13 @@
                                             [:option {:value (get-value-fn item)} (get-label-fn item)])
                                           option-items))
             attribs (cond-> (assoc attribs :class (adu/css->str :input :select :wb-select
+                                                                (when multiple? :is-multiple)
                                                                 extra-classes
                                                                 dynamic-classes)
                                            :value value)
                             disabled? (assoc :disabled "disabled"))]
         [:div.control
-         [:div.select
+         [:div.select {:class (adu/css->str (when multiple? :is-multiple))}
           (into [:select attribs] children)]]))))
 
 (s/fdef select-input
