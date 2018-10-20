@@ -8,7 +8,8 @@
             [woolybear.ad.catalog.layouts :as layout-demo]
             [woolybear.ad.catalog.containers :as containers-demo]
             [woolybear.ad.catalog.icons :as icons-demo]
-            [woolybear.ad.catalog.buttons :as buttons-demo]))
+            [woolybear.ad.catalog.buttons :as buttons-demo]
+            [woolybear.ad.catalog.forms :as forms-demo]))
 
 (def data-path [:ad-catalog :tab-panel])
 
@@ -48,6 +49,7 @@
       [buttons/tab-button {:panel-id :demo/containers} "Containers"]
       [buttons/tab-button {:panel-id :demo/icons} "Icons"]
       [buttons/tab-button {:panel-id :demo/buttons} "Buttons"]
+      [buttons/tab-button {:panel-id :demo/forms} "Forms"]
       ]]
 
     [layout/page-body {:extra-classes :ad-catalog}
@@ -65,5 +67,8 @@
 
       [tab-panel/sub-panel {:panel-id :demo/buttons}
        [buttons-demo/catalog]]
+
+      [tab-panel/sub-panel {:panel-id :demo/forms}
+       [forms-demo/catalog]]
 
       ]]]])

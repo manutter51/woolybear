@@ -21,6 +21,13 @@ $primary: $orange;
   font-weight: 800;
 }
 
+.is-required-mark {
+  color: $red;
+  font-weight: bold;
+  font-size: 125%;
+  line-height: 100%;
+}
+
 @import "bulma/sass/utilities/derived-variables";
 @import "bulma/bulma";
 
@@ -28,6 +35,7 @@ $primary: $orange;
 @import "partials/effects";
 @import "partials/containers";
 @import "partials/tab-panel";
+@import "partials/forms";
 
 // load last so it gets all of the above styles
 @import "partials/ad-catalog";

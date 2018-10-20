@@ -26,6 +26,12 @@
 
     .level-item-left {
       margin-right: 1rem;
+
+      .wb-button {
+        font-size: 66%;
+        color: $black-ter;
+        font-weight: 400;
+      }
     }
 
     .level-item {
@@ -59,12 +65,6 @@
 .wb-page-title {
   margin-bottom: 1rem;
   font-weight: 600;
-}
-
-.wb-v-scroll-pane-overflow {
-  overflow-y: auto;
-  border: 1px solid $grey-light;
-  height: 100%;
 }
 
 .wb-padded {

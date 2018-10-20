@@ -55,6 +55,11 @@
 ;; retrieve its current state
 (s/def :ad/subscribe-to-component-data :ad/subscription)
 
+;; Self-aware components need a "path" to their own data so they can
+;; update themselves in the built-in handlers. The path will be just
+;; a vector of keywords to be used in a call to `assoc-in` or `update-in`.
+(s/def :ad/component-path (s/coll-of keyword? :kind vector?))
+
 (defn extract-opts
   "Given a vector of arguments, checks to see if the first argument is a map of options.
   Returns a 2-element vector containing the options (if any) and a vector of the remaining
@@ -153,6 +158,28 @@
     :else (throw (ex-info "First argument to append-to-dispatcher must be a function or a vector."
                           {:handler dispatcher :more more}))))
 
+(defn mk-keydown-dispatcher
+  "
+  Given a map whose keys are the names of standard keyboard keys, as described in the JS docs at
+  https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values, and whose values
+  are event dispatchers, return an event handler function that dispatches the given event when
+  the corresponding key is pressed. For example, if the map is {\"Enter\" [:key/enter]}, then
+  mk-keydown-dispatcher will return a function that dispatches [:key/enter] when the Enter key
+  is pressed. Use as the :on-key-down handler for an input field.
+  "
+  [dispatchers]
+  (let [has-key? (into #{} (keys dispatchers))
+        ;; Use mk-dispatcher on each of the values in the dispatchers map
+        dispatchers (reduce-kv (fn [d k v]
+                                 (assoc d k (mk-dispatcher v)))
+                      {}
+                      dispatchers)]
+    (fn [e]
+      (let [c (..  e -target -char)]
+        (when (has-key? c)
+          ;; retrieve dispatcher and execute it
+          ((get dispatchers c)))))))
+
 (defn- to-name
   "Given a value that may be a string, symbol, or keyword, return the
   name of the value, or the original value if it's not a symbol or keyword."
@@ -190,3 +217,8 @@
   (let [counter (atom 0)]
     (fn []
       (swap! counter inc))))
+
+(defn js-event-val
+  "Given a JS event, get the value of the event target."
+  [e]
+  (some-> e .-target .-value))

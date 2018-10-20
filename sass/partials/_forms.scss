@@ -1,0 +1,22 @@
+.wb-errors {
+  .wb-error {
+    font-size: 80%;
+    font-style: italic;
+  }
+
+  .error {
+    color: $danger;
+  }
+
+  .warning {
+    color: $orange;
+  }
+
+  .info {
+    color: $info;
+  }
+}
+
+.wb-field-group {
+  margin-bottom: 0.5rem;
+}

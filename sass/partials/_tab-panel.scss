@@ -1,18 +1,21 @@
 .level.wb-bar.wb-tab-bar {
-  margin-bottom: -2px;
-  border-bottom: 1px solid $grey-lighter;
+  margin-bottom: 0;
+  border-bottom: 3px solid $grey-lighter;
   width: 100%;
 
   .level-item button {
-    margin-bottom: -1px;
+    margin-bottom: -3px;
     color: $grey;
+    background: $white-ter;
     -webkit-border-radius: 8px 8px 0 0;
     -moz-border-radius: 8px 8px 0 0;
     border-radius: 8px 8px 0 0;
+    border-bottom: 3px solid $grey-lighter;
 
     &.active {
       color: $primary;
-      margin-bottom: -2px;
+      background: $white;
+      margin-bottom: -3px;
       border-top: 2px solid $grey-lighter;
       border-left: 2px solid $grey-lighter;
       border-right: 2px solid $grey-lighter;
@@ -27,3 +30,11 @@
     }
   }
 }
+
+.wb-v-scroll-pane-overflow {
+  overflow-y: auto;
+  border-left: 1px solid $grey-light;
+  border-bottom: 1px solid $grey-light;
+  height: 100%;
+}
+
