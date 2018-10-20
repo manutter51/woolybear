@@ -4,7 +4,8 @@
             [woolybear.ad.catalog.utils :as acu]
             [woolybear.ad.layout :as layout]
             [woolybear.ad.containers :as containers]
-            [woolybear.ad.forms :as forms]))
+            [woolybear.ad.forms :as forms]
+            [woolybear.ad.utils :as adu]))
 
 (re-frame/reg-sub
   :ad-catalog/forms-demo
@@ -15,7 +16,7 @@
 (re-frame/reg-sub
   :forms-demo/demo
   :<- [:ad-catalog/forms-demo]
-  (fn [forms-demo ix]
+  (fn [forms-demo [_ ix]]
     (get forms-demo ix)))
 
 (defn catalog
@@ -86,15 +87,30 @@
    (acu/demo "Text input with placeholder"
      "Use a placeholder instead of a label if you like."
      [layout/padded
-      [forms/text-input {:id "demo-3"
-                         :placeholder "your-email@your-company.com"
+      [forms/text-input {:id                          "demo-3"
+                         :placeholder                 "your-email@your-company.com"
                          :component-data-path         [:ad-catalog :forms-demo 3]
                          :subscribe-to-component-data [:forms-demo/demo 3]}]]
      '[layout/padded
-       [forms/text-input {:id "demo-3"
-                          :placeholder "your-email@your-company.com"
+       [forms/text-input {:id                          "demo-3"
+                          :placeholder                 "your-email@your-company.com"
                           :component-data-path         [:ad-catalog :forms-demo 3]
                           :subscribe-to-component-data [:forms-demo/demo 3]}]])
+
+   (acu/demo "Disabled text input"
+     "Use a subscription if you need to disable/enable a field at run-time."
+     [layout/padded
+      [forms/text-input {:id                          "demo-4"
+                         :placeholder                 "This field is disabled"
+                         :component-data-path         [:ad-catalog :forms-demo 4]
+                         :subscribe-to-component-data [:forms-demo/demo 4]
+                         :subscribe-to-disabled?      (atom true)}]]
+     '[layout/padded
+       [forms/text-input {:id                          "demo-4"
+                          :placeholder                 "This field is disabled"
+                          :component-data-path         [:ad-catalog :forms-demo 4]
+                          :subscribe-to-component-data [:forms-demo/demo 4]
+                          :subscribe-to-disabled?      (atom true)}]])
 
    (acu/demo "Text input with errors"
      "To validate form fields, create a subscription that subscribes to the field's component data.
@@ -108,42 +124,86 @@
      [layout/padded
       [forms/field-group
        [forms/label {:for "demo-4-a"} "Field with errors"]
-       [forms/text-input {:id "demo-4-a"
-                          :subscribe-to-errors (atom [{:msg "This is an error message" :class :error}])
-                          :component-data-path [:ad-catalog :forms-demo "4a"]
+       [forms/text-input {:id                          "demo-4-a"
+                          :subscribe-to-errors         (atom [{:msg "This is an error message" :class :error}])
+                          :component-data-path         [:ad-catalog :forms-demo "4a"]
                           :subscribe-to-component-data [:forms-demo/demo "4a"]}]]
       [forms/field-group
        [forms/label {:for "demo-4-b"} "Field with warning"]
-       [forms/text-input {:id "demo-4-b"
-                          :subscribe-to-errors (atom [{:msg "This is warning" :class :warning}])
-                          :component-data-path [:ad-catalog :forms-demo "4b"]
+       [forms/text-input {:id                          "demo-4-b"
+                          :subscribe-to-errors         (atom [{:msg "This is warning" :class :warning}])
+                          :component-data-path         [:ad-catalog :forms-demo "4b"]
                           :subscribe-to-component-data [:forms-demo/demo "4b"]}]]
       [forms/field-group
        [forms/label {:for "demo-4-c"} "Field with info"]
-       [forms/text-input {:id "demo-4-c"
-                          :subscribe-to-errors (atom [{:msg "This is just FYI" :class :info}])
-                          :component-data-path [:ad-catalog :forms-demo "4c"]
+       [forms/text-input {:id                          "demo-4-c"
+                          :subscribe-to-errors         (atom [{:msg "This is just FYI" :class :info}])
+                          :component-data-path         [:ad-catalog :forms-demo "4c"]
                           :subscribe-to-component-data [:forms-demo/demo "4c"]}]]]
      '[layout/padded
-      [forms/field-group
-       [forms/label {:for "demo-4-a"} "Field with errors"]
-       [forms/text-input {:id "demo-4-a"
-                          :subscribe-to-errors (atom [{:msg "This is an error message" :class :error}])
-                          :component-data-path [:ad-catalog :forms-demo "4a"]
-                          :subscribe-to-component-data [:forms-demo/demo "4a"]}]]
-      [forms/field-group
-       [forms/label {:for "demo-4-b"} "Field with warning"]
-       [forms/text-input {:id "demo-4-b"
-                          :subscribe-to-errors (atom [{:msg "This is warning" :class :warning}])
-                          :component-data-path [:ad-catalog :forms-demo "4b"]
-                          :subscribe-to-component-data [:forms-demo/demo "4b"]}]]
-      [forms/field-group
-       [forms/label {:for "demo-4-c"} "Field with info"]
-       [forms/text-input {:id "demo-4-c"
-                          :subscribe-to-errors (atom [{:msg "This is just FYI" :class :info}])
-                          :component-data-path [:ad-catalog :forms-demo "4c"]
-                          :subscribe-to-component-data [:forms-demo/demo "4c"]}]]])
+       [forms/field-group
+        [forms/label {:for "demo-4-a"} "Field with errors"]
+        [forms/text-input {:id                          "demo-4-a"
+                           :subscribe-to-errors         (atom [{:msg "This is an error message" :class :error}])
+                           :component-data-path         [:ad-catalog :forms-demo "4a"]
+                           :subscribe-to-component-data [:forms-demo/demo "4a"]}]]
+       [forms/field-group
+        [forms/label {:for "demo-4-b"} "Field with warning"]
+        [forms/text-input {:id                          "demo-4-b"
+                           :subscribe-to-errors         (atom [{:msg "This is warning" :class :warning}])
+                           :component-data-path         [:ad-catalog :forms-demo "4b"]
+                           :subscribe-to-component-data [:forms-demo/demo "4b"]}]]
+       [forms/field-group
+        [forms/label {:for "demo-4-c"} "Field with info"]
+        [forms/text-input {:id                          "demo-4-c"
+                           :subscribe-to-errors         (atom [{:msg "This is just FYI" :class :info}])
+                           :component-data-path         [:ad-catalog :forms-demo "4c"]
+                           :subscribe-to-component-data [:forms-demo/demo "4c"]}]]])
 
+   (acu/demo "Select input with simple values"
+     "See `(doc select-input)` for details concerning the options you can or must pass to
+     a select list. This example demonstrates using select-input with a simple list of
+     strings."
+     [layout/padded
+      [forms/select-input {:id                          "select-demo-1"
+                           :component-data-path         [:ad-catalog :forms-demo :select-1]
+                           :subscribe-to-component-data [:forms-demo/demo :select-1]
+                           :subscribe-to-option-items   (atom ["Jan" "Feb" "Mar" "Apr" "May" "Jun"
+                                                               "Jul" "Aug" "Sep" "Oct" "Nov" "Dec"])}]]
+     '[layout/padded
+       [forms/select-input {:id                          "select-demo-1"
+                            :component-data-path         [:ad-catalog :forms-demo :select-1]
+                            :subscribe-to-component-data [:forms-demo/demo :select-1]
+                            :subscribe-to-option-items   (atom ["Jan" "Feb" "Mar" "Apr" "May" "Jun"
+                                                                "Jul" "Aug" "Sep" "Oct" "Nov" "Dec"])}]])
 
+   (acu/demo "Select input with custom labels and values"
+     "This example uses custom :get-label-fn and :get-value-fn options to display a list of items in a
+     more human-friendly format, and to return a custom value for each option. Watch the JS console for
+     on-change messages when making a selection."
+     [layout/padded
+      [forms/select-input {:id                          "select-demo-2"
+                           :component-data-path         [:ad-catalog :forms-demo :select-2]
+                           :subscribe-to-component-data [:forms-demo/demo :select-2]
+                           :subscribe-to-option-items   (atom [{:id 1 :type :widget}
+                                                               {:id 2 :type :widget}
+                                                               {:id 3 :type :gizmo}
+                                                               {:id 4 :type :widget}
+                                                               {:id 5 :type :gizmo}])
+                           :get-label-fn                (fn [item] (str (name (:type item)) "-" (:id item)))
+                           :get-value-fn                (fn [item] (str (:id item)))
+                           :on-change                   (fn [_ new-val] (js/console.log "Selected %o" (adu/js-event-val new-val)))}]]
+     '[layout/padded
+       [forms/select-input {:id                          "select-demo-2"
+                            :component-data-path         [:ad-catalog :forms-demo :select-2]
+                            :subscribe-to-component-data [:forms-demo/demo :select-2]
+                            :subscribe-to-option-items   (atom [{:id 1 :type :widget}
+                                                                {:id 2 :type :widget}
+                                                                {:id 3 :type :gizmo}
+                                                                {:id 4 :type :widget}
+                                                                {:id 5 :type :gizmo}])
+                            :get-label-fn                (fn [item] (str (name (:type item)) "-" (:id item)))
+                            :get-value-fn                (fn [item] (str (:id item)))
+                            :on-change                   (fn [_ new-val] (fn [_ new-val] (js/console.log "Selected %o" (adu/js-event-val new-val))))}]])
 
    ])

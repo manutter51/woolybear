@@ -79,6 +79,37 @@
   :args (s/cat :path :ad/component-path)
   :ret vector?)
 
+(defn mk-dispatchers
+  "Given a component-data-path and a map with the keys :on-enter-key, :on-escape-key, and :on-change,
+  return a map with each of those keys mapped to a dispatcher function suitable for use in text-input,
+  select-input, and so on."
+  [component-data-path {:keys [on-enter-key on-escape-key on-change]}]
+  (let [path component-data-path ;; alias for convenience
+        on-key-dispatchers (cond-> {}
+                                   on-enter-key (assoc "Enter"
+                                                       (adu/append-to-dispatcher on-enter-key path))
+                                   on-escape-key (assoc "Escape"
+                                                        (adu/append-to-dispatcher on-escape-key path)))
+        on-key-down-dispatcher (when (seq on-key-dispatchers)
+                                 (adu/mk-keydown-dispatcher on-key-dispatchers))
+        change-dispatcher* (when on-change
+                             (adu/mk-dispatcher (adu/append-to-dispatcher on-change component-data-path)))
+        change-dispatcher (if change-dispatcher*
+                            (fn [e]
+                              (re-frame/dispatch [:form-field/change component-data-path (adu/js-event-val e)])
+                              (change-dispatcher* e))
+                            ;; else
+                            (fn [e]
+                              (re-frame/dispatch [:form-field/change component-data-path (adu/js-event-val e)])))]
+    (cond-> {:on-change change-dispatcher}
+            on-key-down-dispatcher (assoc :on-key-down on-key-down-dispatcher))))
+
+(s/fdef mk-dispatchers
+  :args (s/cat :path vector? :dispatchers (s/keys :opt-un [:input/on-enter-key
+                                                           :input/on-escape-key
+                                                           :input/on-change]))
+  :ret map?)
+
 ;;;
 ;;; Built-in handlers for input field events
 ;;;
@@ -164,6 +195,7 @@
 (s/def :input/type #{:text :password})
 (s/def :input/default any?)
 (s/def :input/placeholder string?)
+(s/def :input/subscribe-to-disabled? :ad/subscription)
 (s/def :input/subscribe-to-errors :ad/subscription)
 (s/def :input/on-change :ad/event-dispatcher)
 (s/def :input/on-enter-key :ad/event-dispatcher)
@@ -177,6 +209,7 @@
                                        :input/name
                                        :input/type
                                        :input/default
+                                       :input/subscribe-to-disabled?
                                        :input/placeholder
                                        :input/subscribe-to-errors
                                        :input/on-change
@@ -186,37 +219,18 @@
                                        :ad/extra-classes
                                        :ad/subscribe-to-classes]))
 
-(defn- get-attribs
+(defn- get-text-input-attribs
   "Utility function just to keep text-input from getting too big. Builds the component
   attributes map given the options."
   [opts]
-  (let [{:keys [component-data-path id name type placeholder on-change on-enter-key
-                on-escape-key autofocus?]} opts
+  (let [{:keys [component-data-path id name type placeholder autofocus? on-change]} opts
         type (or type :text)  ;; set default value for optional :text key
-        path component-data-path ;; alias for convenience
-        on-key-dispatchers (cond-> {}
-                                   on-enter-key (assoc "Enter"
-                                                       (adu/append-to-dispatcher on-enter-key path))
-                                   on-escape-key (assoc "Escape"
-                                                        (adu/append-to-dispatcher on-escape-key path)))
-        on-key-down-dispatcher (when (seq on-key-dispatchers)
-                                 (adu/mk-keydown-dispatcher on-key-dispatchers))
-        change-dispatcher* (when on-change
-                             (adu/mk-dispatcher (adu/append-to-dispatcher on-change path)))
-        change-dispatcher (if change-dispatcher*
-                            (fn [e]
-                              (change-dispatcher* e)
-                              (re-frame/dispatch [:form-field/change path (adu/js-event-val e)]))
-                            ;; else
-                            (fn [e]
-                              (re-frame/dispatch [:form-field/change path (adu/js-event-val e)])))]
-    (cond-> {:type      type
-             :on-change change-dispatcher}
+        dispatchers (mk-dispatchers component-data-path opts)]
+    (cond-> (merge dispatchers {:type type})
             id (assoc :id id)
             name (assoc :name name)
             placeholder (assoc :placeholder placeholder)
-            autofocus? (assoc :autofocus autofocus?)
-            on-key-down-dispatcher (assoc :on-key-down on-key-down-dispatcher))))
+            autofocus? (assoc :autofocus autofocus?))))
 
 (defn text-input
   "
@@ -229,9 +243,12 @@
     * :name The `name` attribute for this field
     * :type Either :text or :password, default :text
     * :default Default value for the field.
+    * :subscribe-to-disabled? Subscription to a boolean value that returns true if the field should be disabled.
     * :placeholder A placeholder string to display in the field when empty
     * :subscribe-to-errors A validation subscription returning any error messages to display below the field.
     * :on-change An event dispatcher to dispatch when the user changes the value of the input
+                 Note that the text-input automatically updates app-db when the value changes; the on-change
+                 dispatcher here is for any *additional* events you wish to fire when the value changes.
     * :on-enter-key An event dispatcher to dispatch when the user hits Enter in this field
     * :on-escape-key An event dispatcher to dispatch when the user hits Escape in this field
     * :autofocus? If present, and true, sets the `autofocus` attribute on this field
@@ -243,24 +260,27 @@
   option must be a subscription returning this data.
   "
   [opts]
-  (let [{:keys [subscribe-to-component-data component-data-path default
+  (let [{:keys [subscribe-to-component-data component-data-path default subscribe-to-disabled?
                 subscribe-to-errors extra-classes subscribe-to-classes]} opts
-        path component-data-path ;; alias for convenience
         component-data-sub (adu/subscribe-to subscribe-to-component-data)
+        disabled?-sub (adu/subscribe-to subscribe-to-disabled?)
         errors-sub (adu/subscribe-to subscribe-to-errors)
         classes-sub (adu/subscribe-to subscribe-to-classes)
-        attribs (get-attribs opts)]
+        attribs (get-text-input-attribs opts)]
     ;; dispatch init event at component definition time
-    (re-frame/dispatch [:form-field/init path default])
+    (re-frame/dispatch [:form-field/init component-data-path default])
     (fn [_]
       (let [{:keys [value]} @component-data-sub
             dynamic-classes @classes-sub
+            disabled? @disabled?-sub
             errors @errors-sub
-            attribs (assoc attribs :class (adu/css->str :input :wb-text-input
-                                                        extra-classes
-                                                        dynamic-classes)
-                                   :value value)]
-        [:div
+            attribs (cond->
+                      (assoc attribs :class (adu/css->str :input :wb-text-input
+                                                          extra-classes
+                                                          dynamic-classes)
+                                     :value value)
+                      disabled? (assoc :disabled "disabled"))]
+        [:div.control
          [:input attribs]
          [errors-list errors]]))))
 
@@ -279,7 +299,7 @@
     (fn [& args]
       (let [[_ children] (adu/extract-opts args)
             dynamic-classes @classes-sub]
-        (into [:div {:class (adu/css->str :wb-field-group
+        (into [:div {:class (adu/css->str :field :wb-field-group
                                           extra-classes
                                           dynamic-classes)}]
               children)))))
@@ -287,4 +307,120 @@
 (s/fdef field-group
   :args (s/cat :opts :label/options
                :children (s/+ any?))
+  :ret vector?)
+
+(s/def :select/subscribe-to-option-items :ad/subscription)
+(s/def :select/none-value string?)
+(s/def :select/multiple? boolean?)
+(s/def :select/size int?)
+(s/def :select/get-label-fn fn?)
+(s/def :select/get-value-fn fn?)
+
+(s/def :select/options (s/keys :req-un [:select/subscribe-to-option-items
+                                        :ad/subscribe-to-component-data
+                                        :input/component-data-path]
+                               :opt-un [:input/id
+                                        :input/name
+                                        :input/default
+                                        :input/autofocus?
+                                        :input/subscribe-to-disabled?
+                                        :input/on-change
+                                        :input/on-enter-key
+                                        :input/on-escape-key
+                                        :select/none-value
+                                        :select/multiple?
+                                        :select/size
+                                        :select/get-label-fn
+                                        :select/get-value-fn
+                                        :ad/extra-classes
+                                        :ad/subscribe-to-classes]))
+
+(defn- get-select-input-attribs
+  [opts]
+  (let [{:keys [component-data-path id name autofocus? multiple? size on-change]} opts
+        dispatchers (mk-dispatchers component-data-path opts)]
+    (cond-> dispatchers
+            id (assoc :id id)
+            name (assoc :name name)
+            autofocus? (assoc :autofocus autofocus?)
+            multiple? (assoc :multiple true)
+            size (assoc :size size))))
+
+(defn select-input
+  "
+  A drop-down/select-menu component for use in forms. Options to display in the select input are
+  passed in via the :subscribe-to-option-items key in the opts argument. If you wish to specify a
+  \"none\" selection to display at the top of the select list, pass it in via the :none-value key.
+  As a self-referential input component, select input requires the component-data-path option and
+  the subscribe-to-component-data subscription, as with the text-input component. The value of the
+  :component-data-path must be a vector of keywords, suitable for use with assoc-in and update-in,
+  defining where the component data for this field lives in the app-db. The subscribe-to-component-data
+  option must be a subscription returning this data.
+
+  The select-input component supports the standard :extra-classes and :subscribe-to-classes options,
+  as well as the following:
+
+    * :id The DOM ID for this element (e.g. for use with [label] components)
+    * :name The form field name attribute for this component
+    * :default A default value for the select
+    * :autofocus? If present and true, sets the \"autofocus\" attribute
+    * :subscribe-to-disabled? Subscription returning true if this component should be disabled
+    * :multiple? If present and true, enables multiple selections (e.g. checklist)
+    * :size If present, sets the \"size\" attribute on the select element
+    * :on-change An event dispatcher to dispatch when the user changes the value of the input
+                 Note that select-input automatically updates app-db when the value changes; the
+                 on-change handler is for any *additional* events you wish to fire when the value changes.
+    * :on-enter-key An event dispatcher to dispatch when the user hits Enter in this field
+    * :on-escape-key An event dispatcher to dispatch when the user hits Escape in this field
+    * :get-label-fn (See below)
+    * :get-value-fn (See below)
+
+  The option-items list returned by :subscribe-to-option-items can be in any format as long as you
+  provide values for the keys :get-label-fn and/or get-value-fn. For each item in the option-items
+  list, a label will be generated by calling the get-label-fn with the option item as an argument.
+  Default action is to use the value of the :label key in the option item if there is one, or to
+  use the entire option item, in string form. The default value is to return the entire option item.
+  "
+  [opts]
+  (let [{:keys [extra-classes subscribe-to-classes subscribe-to-option-items subscribe-to-disabled?
+                component-data-path subscribe-to-component-data default none-value get-label-fn
+                get-value-fn]} opts
+        classes-sub (adu/subscribe-to subscribe-to-classes)
+        option-items-sub (adu/subscribe-to subscribe-to-option-items)
+        disabled?-sub (adu/subscribe-to subscribe-to-disabled?)
+        component-data-sub (adu/subscribe-to subscribe-to-component-data)
+        get-label-fn (if (fn? get-label-fn)
+                       get-label-fn
+                       (fn [item]
+                         (or (:label item) (str item))))
+        get-value-fn (if (fn? get-value-fn)
+                       get-value-fn
+                       str)
+        attribs (get-select-input-attribs opts)]
+
+    ;; dispatch init event at component definition time
+    (re-frame/dispatch [:form-field/init component-data-path default])
+
+    (fn [_]
+      (let [{:keys [value]} @component-data-sub
+            value (or value "")
+            dynamic-classes @classes-sub
+            option-items @option-items-sub
+            disabled? @disabled?-sub
+            children (if none-value [[:option {:value ""} none-value]]
+                                    [])
+            children (into children (mapv (fn [item]
+                                            [:option {:value (get-value-fn item)} (get-label-fn item)])
+                                          option-items))
+            attribs (cond-> (assoc attribs :class (adu/css->str :input :select :wb-select
+                                                                extra-classes
+                                                                dynamic-classes)
+                                           :value value)
+                            disabled? (assoc :disabled "disabled"))]
+        [:div.control
+         [:div.select
+          (into [:select attribs] children)]]))))
+
+(s/fdef select-input
+  :args (s/cat :opts :select/options)
   :ret vector?)
