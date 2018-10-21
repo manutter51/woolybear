@@ -13,8 +13,7 @@
   attach custom CSS classes to a component when used in the design of larger
   components.
   "
-  (:require [re-frame.core :as re-frame]
-            [woolybear.ad.utils :as adu]
+  (:require [woolybear.ad.utils :as adu]
             [cljs.spec.alpha :as s]))
 
 (defn page

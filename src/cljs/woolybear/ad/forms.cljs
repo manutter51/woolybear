@@ -7,12 +7,8 @@
   flexible and useful.
   "
   (:require [re-frame.core :as re-frame]
-            [reagent.ratom :as ratom]
             [cljs.spec.alpha :as s]
-            [woolybear.ad.utils :as adu]
-            [woolybear.ad.buttons :as buttons]
-            [woolybear.ad.icons :as icons]
-            [woolybear.ad.layout :as layout]))
+            [woolybear.ad.utils :as adu]))
 
 ;;;
 ;;; Labels
@@ -85,7 +81,7 @@
   select-input, and so on. Note that this us used for select-input as well as text-input, so we need
   to check for the :multiple? option in the on-change handler."
   ([component-data-path opts] (mk-dispatchers component-data-path opts :form-field/change))
-  ([component-data-path {:keys [on-enter-key on-escape-key on-change] :as opts} dispatch-key]
+  ([component-data-path {:keys [on-enter-key on-escape-key on-change]} dispatch-key]
    (let [path component-data-path ;; alias for convenience
          on-key-dispatchers (cond-> {}
                                     on-enter-key (assoc "Enter"

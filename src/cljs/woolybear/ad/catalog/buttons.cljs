@@ -1,10 +1,8 @@
 (ns woolybear.ad.catalog.buttons
   "Catalog and demonstrations of available button components."
-  (:require [re-frame.core :as re-frame]
-            [reagent.ratom :as ratom]
+  (:require [reagent.ratom :as ratom]
             [woolybear.ad.catalog.utils :as acu]
             [woolybear.ad.layout :as layout]
-            [woolybear.ad.containers :as containers]
             [woolybear.ad.icons :as icons]
             [woolybear.ad.buttons :as buttons]))
 

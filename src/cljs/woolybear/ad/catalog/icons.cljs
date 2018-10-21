@@ -1,18 +1,23 @@
 (ns woolybear.ad.catalog.icons
   "Catalog and demonstrations of available icon components."
-  (:require [re-frame.core :as re-frame]
-            [reagent.ratom :as ratom]
-            [woolybear.ad.catalog.utils :as acu]
+  (:require [woolybear.ad.catalog.utils :as acu]
             [woolybear.ad.layout :as layout]
             [woolybear.ad.containers :as containers]
-            [woolybear.ad.buttons :as buttons]
             [woolybear.ad.icons :as icons]
-            [woolybear.packs.flex-panel :as flex]))
+            [woolybear.ad.images :as images]))
 
 (defn catalog
   []
 
   [:div
+
+   (acu/demo "Simple Image"
+     "See https://bulma.io/documentation/elements/image/ for handy Bulma classes you
+     can apply to images to set the placeholder size."
+     [layout/padded
+      [images/image {:src "/img/logo.png"}]]
+     '[layout/padded
+      [images/image {:src "/img/logo.png"}]])
 
    (acu/demo "Standard Icons"
      "Simple, FontAwesome-based icons."

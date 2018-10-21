@@ -3,8 +3,7 @@
   Container components are the next step up from simple layout components. Container
   components take subscriptions and may fire events.
   "
-  (:require [re-frame.core :as re-frame]
-            [reagent.ratom :as ratom]
+  (:require [reagent.ratom :as ratom]
             [cljs.spec.alpha :as s]
             [woolybear.ad.utils :as adu]
             [woolybear.ad.buttons :as buttons]))

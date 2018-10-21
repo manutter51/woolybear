@@ -4,10 +4,6 @@
   a utility for pop-up source code blocks.
   "
   (:require [clojure.string :as string]
-            [re-frame.core :as re-frame]
-            [woolybear.ad.utils :as adu]
-            [woolybear.ad.layout :as layout]
-            [woolybear.ad.buttons :as buttons]
             [woolybear.ad.containers :as containers]))
 
 ;; normally we'd define code-block as a layout component, but

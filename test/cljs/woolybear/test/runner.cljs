@@ -9,7 +9,6 @@
     ;; you make a change to a file that has related tests.
             woolybear.ad.buttons-test
             woolybear.ad.containers-test
-            woolybear.packs.tab-panel-test
             ))
 
 (def report-stats (atom {}))
@@ -32,7 +31,7 @@
 
 (defmulti report :type)
 
-(defmethod report :default [report] #_(prn report))
+(defmethod report :default [_] (fn [& _]))
 
 (defmethod report :begin-test-ns [_] (bump :files))
 
@@ -41,7 +40,7 @@
   (swap! report-stats update :with-tests conj ((comp :ns meta) (:var report)))
   #_(println "\n" (:var report)))
 
-(defmethod report :pass [report]
+(defmethod report :pass [_]
   (bump :passes)
   (when (zero? (mod (:tests @report-stats) 40))
     (println))

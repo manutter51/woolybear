@@ -3,7 +3,6 @@
   (:require [re-frame.core :as re-frame]
             [woolybear.ad.catalog.utils :as acu]
             [woolybear.ad.layout :as layout]
-            [woolybear.ad.containers :as containers]
             [woolybear.ad.forms :as forms]
             [woolybear.ad.utils :as adu]))
 
@@ -235,7 +234,7 @@
                            :subscribe-to-component-data [:forms-demo/demo :select-3]
                            :subscribe-to-option-items   (atom ["House cat" "Lion" "Puma" "Jaguar" "Tiger"
                                                                "Ocelot" "Panther" "Lynx" "Bobcat"])
-                           :on-change                   (fn [_ new-val] (fn [_ new-val] (js/console.log "Demo 3, Selected %o" (adu/js-event-val new-val))))}]]
+                           :on-change                   (fn [_ new-val] (js/console.log "Demo 3, Selected %o" (adu/js-event-val new-val)))}]]
      '[layout/padded
        [forms/select-input {:id                          "select-demo-3"
                             :multiple?                   true

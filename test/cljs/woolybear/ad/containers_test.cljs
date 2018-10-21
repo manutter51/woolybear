@@ -121,84 +121,83 @@
 
   (testing "with no header or footer"
 
-    (testing "Rendering with no opts"
-      (let [r (sut/v-scroll-pane [:foo [:bar]] [:baz {}])
-            result (r [:foo [:bar]] [:baz {}])]
-        (is (= [:div {:class "wb-v-scroll-pane-container"}
-                [:div.wb-v-scroll-pane-overflow
-                 [:foo [:bar]] [:baz {}]]]
-               result)
-            "renders child elements correctly when no opts given.")))
-
     (testing "Rendering with :extra-classes option"
-      (let [opts {:extra-classes :foo}
+      (let [opts {:height "50vh"
+                  :extra-classes :foo}
             r (sut/v-scroll-pane opts [:foo [:bar]] [:baz {}])
             result (r opts [:foo [:bar]] [:baz {}])]
         (is (= [:div {:class "wb-v-scroll-pane-container foo"}
-                [:div.wb-v-scroll-pane-overflow
+                [:div.wb-v-scroll-pane-overflow {:style {:height "50vh"}}
                  [:foo [:bar]] [:baz {}]]]
                result)
             "renders extra classes correctly"))
-      (let [opts {:extra-classes :foo}
+      (let [opts {:height "50vh"
+                  :extra-classes :foo}
             r (sut/v-scroll-pane opts [:foo [:bar]] [:baz {}])
-            result (r {:extra-classes :bar} [:foo [:bar]] [:baz {}])]
+            result (r {:height "50vh"
+                       :extra-classes :bar} [:foo [:bar]] [:baz {}])]
         (is (= [:div {:class "wb-v-scroll-pane-container foo"}
-                [:div.wb-v-scroll-pane-overflow
+                [:div.wb-v-scroll-pane-overflow {:style {:height "50vh"}}
                  [:foo [:bar]] [:baz {}]]]
                result)
             "renders extra classes correctly despite changes at render-time.")))
 
     (testing "Rendering with :subscribe-to-classes option"
       (let [cls (atom :foo)
-            opts {:subscribe-to-classes cls}
+            opts {:height "50vh"
+                  :subscribe-to-classes cls}
             r (sut/v-scroll-pane opts [:foo [:bar]] [:baz {}])
             result (r opts [:foo [:bar]] [:baz {}])]
         (is (= [:div {:class "wb-v-scroll-pane-container foo"}
-                [:div.wb-v-scroll-pane-overflow
+                [:div.wb-v-scroll-pane-overflow {:style {:height "50vh"}}
                  [:foo [:bar]] [:baz {}]]]
                result)
             "renders extra classes correctly"))
       (let [cls (atom :foo)
-            opts {:subscribe-to-classes cls}
+            opts {:height "50vh"
+                  :subscribe-to-classes cls}
             r (sut/v-scroll-pane opts [:foo [:bar]] [:baz {}])
             _ (reset! cls :bar)
             result (r opts [:foo [:bar]] [:baz {}])]
         (is (= [:div {:class "wb-v-scroll-pane-container bar"}
-                [:div.wb-v-scroll-pane-overflow
+                [:div.wb-v-scroll-pane-overflow {:style {:height "50vh"}}
                  [:foo [:bar]] [:baz {}]]]
                result)
             "renders extra classes correctly including changes at render-time.")))
 
     (testing "Rendering with header"
-      (let [h [sut/scroll-pane-header {} [:foo]]
-            r (sut/v-scroll-pane [:foo] h [:bar])
-            result (r [:foo] h [:bar])]
+      (let [opts {:height "50vh"}
+            h [sut/scroll-pane-header {} [:foo]]
+            r (sut/v-scroll-pane opts [:foo] h [:bar])
+            result (r opts [:foo] h [:bar])]
         (is (= [:div {:class "wb-v-scroll-pane-container"}
                 [:div.wb-v-scroll-pane-header h]
-                [:div.wb-v-scroll-pane-overflow
+                [:div.wb-v-scroll-pane-overflow {:style {:height "50vh"}}
                  [:foo] [:bar]]]
                result)
             "puts header above body")))
 
     (testing "Rendering with footer"
-      (let [f [sut/scroll-pane-footer {} [:foo]]
-            r (sut/v-scroll-pane [:foo] f [:bar])
-            result (r [:foo] f [:bar])]
+      (let [opts {:height "50vh"}
+            f [sut/scroll-pane-footer {} [:foo]]
+            r (sut/v-scroll-pane opts [:foo] f [:bar])
+            result (r opts [:foo] f [:bar])]
         (is (= [:div {:class "wb-v-scroll-pane-container"}
-                [:div.wb-v-scroll-pane-overflow
+                [:div.wb-v-scroll-pane-overflow {:style {:height "50vh"}}
                  [:foo] [:bar]]
                 [:div.wb-v-scroll-pane-footer f]]
                result)
             "puts footer below body")))
 
     (testing "Rendering with header and footer"
-      (let [h [sut/scroll-pane-header {} [:foo]]
+      (let [opts {:height "50vh"}
+            h [sut/scroll-pane-header {} [:foo]]
             f [sut/scroll-pane-footer [:baz]]
-            r (sut/v-scroll-pane [:foo] f h [:bar])
-            result (r [:foo] f h [:bar])]
+            r (sut/v-scroll-pane opts [:foo] f h [:bar])
+            result (r opts [:foo] f h [:bar])]
         (is (= [:div {:class "wb-v-scroll-pane-container"}
                 [:div.wb-v-scroll-pane-header h]
-                [:div.wb-v-scroll-pane-overflow
+                [:div.wb-v-scroll-pane-overflow {:style {:height "50vh"}}
                  [:foo] [:bar]]
                 [:div.wb-v-scroll-pane-footer f]]
                result)

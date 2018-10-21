@@ -4,13 +4,11 @@
   bottom. Dynamically re-sizes itself to fit onto screens with any arbitrary
   dimensions and/or any sized browser window.
   "
-  (:require [re-frame.core :as re-frame]
-            [reagent.core :as reagent]
+  (:require [reagent.core :as reagent]
             [reagent.ratom :as ratom]
             [woolybear.ad.utils :as adu]
             [woolybear.ad.containers :as containers]
-            [cljs.spec.alpha :as s]
-            [woolybear.ad.layout :as layout]))
+            [cljs.spec.alpha :as s]))
 
 (defn flex-fixed
   "

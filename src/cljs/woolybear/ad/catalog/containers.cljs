@@ -1,7 +1,6 @@
 (ns woolybear.ad.catalog.containers
   "Catalog and demonstrations of available container components."
-  (:require [re-frame.core :as re-frame]
-            [reagent.ratom :as ratom]
+  (:require [reagent.ratom :as ratom]
             [woolybear.ad.catalog.utils :as acu]
             [woolybear.ad.layout :as layout]
             [woolybear.ad.containers :as containers]

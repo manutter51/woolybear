@@ -1,9 +1,7 @@
 (ns woolybear.ad.catalog.layouts
   "Catalog and acu/demonstrations of available layout components."
-  (:require [re-frame.core :as re-frame]
-            [woolybear.ad.catalog.utils :as acu]
-            [woolybear.ad.layout :as layout]
-            [woolybear.ad.containers :as containers]))
+  (:require [woolybear.ad.catalog.utils :as acu]
+            [woolybear.ad.layout :as layout]))
 
 (defn catalog
   []

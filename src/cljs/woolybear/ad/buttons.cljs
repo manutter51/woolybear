@@ -5,8 +5,7 @@
   promote a consistent UX, and to promote a standard API for things like a
   dynamic 'disabled' attribute.
   "
-  (:require [re-frame.core :as re-frame]
-            [reagent.ratom :as ratom]
+  (:require [reagent.ratom :as ratom]
             [cljs.spec.alpha :as s]
             [woolybear.ad.utils :as adu]))
 
@@ -83,7 +82,8 @@
   [opts & children]
   (let [extra-classes (:extra-classes opts)
         extra-classes (adu/css+css extra-classes :wb-cancel-button)
-        label (or children ["Cancel"])]
+        label (or children ["Cancel"])
+        opts (assoc opts :extra-classes extra-classes)]
     (into [button opts] label)))
 
 (s/fdef cancel-button

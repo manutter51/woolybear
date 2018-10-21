@@ -1,6 +1,5 @@
 (ns woolybear.packs.tab-panel
   (:require [re-frame.core :as re-frame]
-            [reagent.ratom :as ratom]
             [day8.re-frame.tracing :refer-macros [defn-traced]]
             [cljs.spec.alpha :as s]
             [woolybear.ad.utils :as adu]

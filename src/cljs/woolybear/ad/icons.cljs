@@ -3,11 +3,8 @@
   Simple icons based on FontAwesome (free version), suitable for use in buttons,
   dialogs, etc.
   "
-  (:require [re-frame.core :as re-frame]
-            [reagent.ratom :as ratom]
-            [cljs.spec.alpha :as s]
+  (:require [cljs.spec.alpha :as s]
             [woolybear.ad.utils :as adu]
-            [woolybear.ad.buttons :as buttons]
             [clojure.string :as str]))
 
 ;; Wrapper for Font Awesome based icons

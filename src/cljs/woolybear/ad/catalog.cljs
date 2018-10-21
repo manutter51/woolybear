@@ -1,7 +1,6 @@
 (ns woolybear.ad.catalog
   (:require [re-frame.core :as re-frame]
             [woolybear.ad.buttons :as buttons]
-            [woolybear.ad.containers :as containers]
             [woolybear.ad.layout :as layout]
             [woolybear.packs.flex-panel :as flex]
             [woolybear.packs.tab-panel :as tab-panel]
@@ -47,7 +46,7 @@
                          :subscribe-to-component-data [:ad-catalog/tab-panel]}
       [buttons/tab-button {:panel-id :demo/layouts} "Layout"]
       [buttons/tab-button {:panel-id :demo/containers} "Containers"]
-      [buttons/tab-button {:panel-id :demo/icons} "Icons"]
+      [buttons/tab-button {:panel-id :demo/icons} "Icons / Images"]
       [buttons/tab-button {:panel-id :demo/buttons} "Buttons"]
       [buttons/tab-button {:panel-id :demo/forms} "Forms"]
       ]]

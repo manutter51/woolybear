@@ -1,6 +1,5 @@
 (ns woolybear.test.utils
-  (:require [clojure.test :as t]
-            [clojure.string :as string]
+  (:require [clojure.string :as string]
             [cljs.pprint :as pp]
             [clojure.walk :as w]))
 
