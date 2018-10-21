@@ -356,6 +356,7 @@
                                         :input/default
                                         :input/autofocus?
                                         :input/subscribe-to-disabled?
+                                        :input/subscribe-to-errors
                                         :input/on-change
                                         :input/on-enter-key
                                         :input/on-escape-key
@@ -418,11 +419,12 @@
   [opts]
   (let [{:keys [extra-classes subscribe-to-classes subscribe-to-option-items subscribe-to-disabled?
                 component-data-path subscribe-to-component-data default none-value multiple?
-                get-label-fn get-value-fn]} opts
+                subscribe-to-errors get-label-fn get-value-fn]} opts
         classes-sub (adu/subscribe-to subscribe-to-classes)
         option-items-sub (adu/subscribe-to subscribe-to-option-items)
         disabled?-sub (adu/subscribe-to subscribe-to-disabled?)
         component-data-sub (adu/subscribe-to subscribe-to-component-data)
+        errors-sub (adu/subscribe-to subscribe-to-errors)
         default (or default (if multiple? [] ""))
         get-label-fn (if (fn? get-label-fn)
                        get-label-fn
@@ -442,6 +444,7 @@
             dynamic-classes @classes-sub
             option-items @option-items-sub
             disabled? @disabled?-sub
+            errors @errors-sub
             children (if none-value [[:option {:value ""} none-value]]
                                     [])
             children (into children (mapv (fn [item]
@@ -455,7 +458,8 @@
                             disabled? (assoc :disabled "disabled"))]
         [:div.control
          [:div.select {:class (adu/css->str (when multiple? :is-multiple))}
-          (into [:select attribs] children)]]))))
+          (into [:select attribs] children)]
+         [errors-list errors]]))))
 
 (s/fdef select-input
   :args (s/cat :opts :select/options)
