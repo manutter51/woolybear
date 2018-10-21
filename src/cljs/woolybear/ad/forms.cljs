@@ -84,32 +84,34 @@
   return a map with each of those keys mapped to a dispatcher function suitable for use in text-input,
   select-input, and so on. Note that this us used for select-input as well as text-input, so we need
   to check for the :multiple? option in the on-change handler."
-  [component-data-path {:keys [on-enter-key on-escape-key on-change multiple?]}]
-  (let [path component-data-path ;; alias for convenience
-        on-key-dispatchers (cond-> {}
-                                   on-enter-key (assoc "Enter"
-                                                       (adu/append-to-dispatcher on-enter-key path))
-                                   on-escape-key (assoc "Escape"
-                                                        (adu/append-to-dispatcher on-escape-key path)))
-        on-key-down-dispatcher (when (seq on-key-dispatchers)
-                                 (adu/mk-keydown-dispatcher on-key-dispatchers))
-        change-dispatcher* (when on-change
-                             (adu/mk-dispatcher (adu/append-to-dispatcher on-change component-data-path)))
-        event-key (if multiple? :multi-select/change :form-field/change)
-        change-dispatcher (if change-dispatcher*
-                            (fn [e]
-                              (re-frame/dispatch [event-key component-data-path (adu/js-event-val e)])
-                              (change-dispatcher* e))
-                            ;; else
-                            (fn [e]
-                              (re-frame/dispatch [event-key component-data-path (adu/js-event-val e)])))]
-    (cond-> {:on-change change-dispatcher}
-            on-key-down-dispatcher (assoc :on-key-down on-key-down-dispatcher))))
+  ([component-data-path opts] (mk-dispatchers component-data-path opts :form-field/change))
+  ([component-data-path {:keys [on-enter-key on-escape-key on-change] :as opts} dispatch-key]
+   (let [path component-data-path ;; alias for convenience
+         on-key-dispatchers (cond-> {}
+                                    on-enter-key (assoc "Enter"
+                                                        (adu/append-to-dispatcher on-enter-key path))
+                                    on-escape-key (assoc "Escape"
+                                                         (adu/append-to-dispatcher on-escape-key path)))
+         on-key-down-dispatcher (when (seq on-key-dispatchers)
+                                  (adu/mk-keydown-dispatcher on-key-dispatchers))
+         change-dispatcher* (when on-change
+                              (adu/mk-dispatcher (adu/append-to-dispatcher on-change component-data-path)))
+         change-dispatcher (if change-dispatcher*
+                             (fn [e]
+                               (re-frame/dispatch [dispatch-key component-data-path (adu/js-event-val e)])
+                               (change-dispatcher* e))
+                             ;; else
+                             (fn [e]
+                               (re-frame/dispatch [dispatch-key component-data-path (adu/js-event-val e)])))]
+     (cond-> {:on-change change-dispatcher}
+             on-key-down-dispatcher (assoc :on-key-down on-key-down-dispatcher)))))
 
 (s/fdef mk-dispatchers
-  :args (s/cat :path vector? :dispatchers (s/keys :opt-un [:input/on-enter-key
-                                                           :input/on-escape-key
-                                                           :input/on-change]))
+  :args (s/cat :path vector?
+               :dispatchers (s/keys :opt-un [:input/on-enter-key
+                                             :input/on-escape-key
+                                             :input/on-change])
+               :dispatch-key (s/? keyword?))
   :ret map?)
 
 ;;;
@@ -181,6 +183,17 @@
 (re-frame/reg-event-db
   :multi-select/change
   handle-multi-select-change)
+
+(defn handle-checkbox-change
+  "Handler function for the :checkbox/change event. Toggles the boolean value
+  of the :value key in the component data."
+  [db [_ path]]
+  (let [value-path (conj path :value)]
+    (update-in db value-path not)))
+
+(re-frame/reg-event-db
+  :checkbox/change
+  handle-checkbox-change)
 
 ;;;
 ;;; Form field components
@@ -357,7 +370,9 @@
 (defn- get-select-input-attribs
   [opts]
   (let [{:keys [component-data-path id name autofocus? multiple? size]} opts
-        dispatchers (mk-dispatchers component-data-path opts)]
+        dispatchers (if multiple?
+                      (mk-dispatchers component-data-path opts :multi-select/change)
+                      (mk-dispatchers component-data-path opts))]
     (cond-> dispatchers
             id (assoc :id id)
             name (assoc :name name)
@@ -444,4 +459,50 @@
 
 (s/fdef select-input
   :args (s/cat :opts :select/options)
+  :ret vector?)
+
+(s/def :checkbox/options (s/keys :req-un [:input/component-data-path
+                                          :ad/subscribe-to-component-data]
+                                 :opt-un [:input/default
+                                          :input/id
+                                          :input/name
+                                          :input/on-change
+                                          :input/subscribe-to-disabled?
+                                          :ad/extra-classes
+                                          :ad/subscribe-to-classes]))
+
+(defn checkbox
+  "
+  Standard checkbox component, takes standard options :component-data-path, :subscribe-to-component-data,
+  :default, :id, :name, :on-change, :subscribe-to-disabled? :extra-classes, and :subscribe-to-classes.
+  "
+  [opts & children]
+  (let [{:keys [component-data-path default subscribe-to-component-data id name
+                subscribe-to-disabled? extra-classes subscribe-to-classes]} opts
+        component-data-sub (adu/subscribe-to subscribe-to-component-data)
+        classes-sub (adu/subscribe-to subscribe-to-classes)
+        disabled?-sub (adu/subscribe-to subscribe-to-disabled?)
+        dispatchers (mk-dispatchers component-data-path opts :checkbox/change)
+        attribs (cond-> dispatchers
+                        id (assoc :id id)
+                        name (assoc :name name))]
+    (re-frame/dispatch [:form-field/init component-data-path default])
+    (fn [_]
+      (let [{:keys [value]} @component-data-sub
+            disabled? @disabled?-sub
+            dynamic-classes @classes-sub
+            attribs (cond-> (assoc attribs :type "checkbox"
+                                           :value value
+                                           :checked value)
+                            disabled? (assoc :disabled "disabled"))]
+        [:span.control
+         (into [:label {:class (adu/css->str :checkbox :wb-checkbox
+                                             (when disabled? :disabled)
+                                             extra-classes
+                                             dynamic-classes)}
+                [:input attribs]]
+               children)]))))
+
+(s/fdef checkbox
+  :args (s/cat :opts :checkbox/options)
   :ret vector?)

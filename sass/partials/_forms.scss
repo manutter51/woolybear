@@ -20,3 +20,11 @@
 .wb-field-group {
   margin-bottom: 0.5rem;
 }
+
+.wb-checkbox input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+.disabled {
+  color: $grey-light;
+}

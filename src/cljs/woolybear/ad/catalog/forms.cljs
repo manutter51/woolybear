@@ -206,6 +206,23 @@
                             :get-value-fn                (fn [item] (str (:id item)))
                             :on-change                   (fn [_ new-val] (fn [_ new-val] (js/console.log "Selected %o" (adu/js-event-val new-val))))}]])
 
+   (acu/demo "Disabled select input"
+     "Pass the \"disabled\" status via the :subscribe-to-disabled? key"
+     [layout/padded
+      [forms/label "Choose one:"]
+      [forms/select-input {:id                          "select-demo-3"
+                           :component-data-path         [:ad-catalog :forms-demo :select-3]
+                           :subscribe-to-component-data [:forms-demo/demo :select-3]
+                           :subscribe-to-option-items   (atom ["Pikachu" "Bulbasaur" "Squirtle"])
+                           :subscribe-to-disabled?      (atom true)}]]
+     '[layout/padded
+       [forms/label "Choose one:"]
+       [forms/select-input {:id                          "select-demo-3"
+                            :component-data-path         [:ad-catalog :forms-demo :select-3]
+                            :subscribe-to-component-data [:forms-demo/demo :select-3]
+                            :subscribe-to-option-items   (atom ["Pikachu" "Bulbasaur" "Squirtle"])
+                            :subscribe-to-disabled?      (atom true)}]])
+
    (acu/demo "Select input with multiple selection."
      "If you set the \":multiple?\" option to true, you can display a select list that allows more than
      one option item to be selected at a time."
@@ -224,10 +241,50 @@
                             :multiple?                   true
                             :size                        5
                             :none-value                  "--Choose one or more species--"
-                             :component-data-path         [:ad-catalog :forms-demo :select-3]
+                            :component-data-path         [:ad-catalog :forms-demo :select-3]
                             :subscribe-to-component-data [:forms-demo/demo :select-3]
                             :subscribe-to-option-items   (atom ["House cat" "Lion" "Puma" "Jaguar" "Tiger"
                                                                 "Ocelot" "Panther" "Lynx" "Bobcat"])
                             :on-change                   (fn [_ new-val] (fn [_ new-val] (js/console.log "Demo 3, Selected %o" (adu/js-event-val new-val))))}]])
+
+   (acu/demo "Checkbox"
+     "Simple checkbox component."
+     [layout/padded
+      [forms/field-group
+       [forms/checkbox {:id                          "checkbox-demo-1"
+                        :name                        "checkbox-demo-1"
+                        :component-data-path         [:ad-catalog :forms-demo :checkbox-1]
+                        :subscribe-to-component-data [:forms-demo/demo :checkbox-1]
+                        :on-change                   #(js/console.log "Checkbox toggled")}
+        "Unsubscribe from all future junk email"]]]
+     '[layout/padded
+       [forms/field-group
+        [forms/checkbox {:id                          "checkbox-demo-1"
+                         :name                        "checkbox-demo-1"
+                         :component-data-path         [:ad-catalog :forms-demo :checkbox-1]
+                         :subscribe-to-component-data [:forms-demo/demo :checkbox-1]
+                         :on-change                   #(js/console.log "Checkbox toggled")}
+         "Unsubscribe from all future junk email"]]])
+
+   (acu/demo "Disabled checkbox"
+     "Disabled checkbox component."
+     [layout/padded
+      [forms/field-group
+       [forms/checkbox {:id                          "checkbox-demo-2"
+                        :name                        "checkbox-demo-2"
+                        :subscribe-to-disabled?      (atom true)
+                        :component-data-path         [:ad-catalog :forms-demo :checkbox-2]
+                        :subscribe-to-component-data [:forms-demo/demo :checkbox-2]
+                        :on-change                   #(js/console.log "Checkbox toggled")}
+        "Send me more junk email"]]]
+     '[layout/padded
+       [forms/field-group
+        [forms/checkbox {:id                          "checkbox-demo-2"
+                         :name                        "checkbox-demo-2"
+                         :subscribe-to-disabled?      (atom true)
+                         :component-data-path         [:ad-catalog :forms-demo :checkbox-2]
+                         :subscribe-to-component-data [:forms-demo/demo :checkbox-2]
+                         :on-change                   #(js/console.log "Checkbox toggled")}
+         "Send me more junk email"]]])
 
    ])
