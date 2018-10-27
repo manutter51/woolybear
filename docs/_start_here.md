@@ -10,6 +10,10 @@ actions are simulated.
 
 * [Architecture](architecture.md)
 * [Best Practices](best_practices.md)
-* ***Tour de Code***
+* ***Tour de Code*** (in rough order of complexity)
   * [Simple Static Components](../src/cljs/woolybear/ad/layout.cljs)
+  * [Images](../src/cljs/woolybear/ad/images.cljs)
+  * [FontAwesome-based Icons](../src/cljs/woolybear/ad/icons.cljs)
   * [Interactive Containers](../src/cljs/woolybear/ad/containers.cljs)
+  * [Reusable/Customizable Buttons](../src/cljs/woolybear/ad/buttons.cljs)
+  * [Self-aware Form Fields](../src/cljs/woolybear/ad/forms.cljs)
