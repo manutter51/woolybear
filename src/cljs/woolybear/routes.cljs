@@ -30,6 +30,9 @@
   (defroute "/dev/ad-catalog" []
     (re-frame/dispatch [::events/set-active-panel :ad-catalog-panel]))
 
+  (defroute "/register" []
+    (re-frame/dispatch [::events/set-active-panel :registration-page]))
+
 
   ;; --------------------
   (hook-browser-navigation!))

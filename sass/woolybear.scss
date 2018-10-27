@@ -21,11 +21,37 @@ $primary: $orange;
   font-weight: 800;
 }
 
+.wb-page-header {
+  .wb-padded {
+    padding-top: 4rem;
+  }
+
+  .image {
+    display: inline-block;
+    margin: 0 2rem 0 0;
+  }
+}
+
 .is-required-mark {
   color: $red;
   font-weight: bold;
   font-size: 125%;
   line-height: 100%;
+  position: relative;
+  left: 0.1rem;
+}
+
+.width-20 {
+  max-width: 20rem;
+}
+
+.width-50 {
+  max-width: 50%;
+}
+
+.caption {
+  font-size: 80%;
+  font-style: italic;
 }
 
 @import "bulma/sass/utilities/derived-variables";

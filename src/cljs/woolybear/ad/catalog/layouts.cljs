@@ -51,6 +51,11 @@
      [layout/text-block acu/lorem]
      '[layout/text-block acu/lorem])
 
+   (acu/demo "Centered Block"
+     "Centers itself horizontally on the page."
+     [layout/centered {:extra-classes :width-50}
+      [layout/text-block acu/lorem]])
+
    (acu/demo "Frame"
      "Use a frame container to enclose other components inside a bordered frame
      and a drop-shadow."

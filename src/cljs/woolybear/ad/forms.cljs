@@ -90,6 +90,7 @@
                                                          (adu/append-to-dispatcher on-escape-key path)))
          on-key-down-dispatcher (when (seq on-key-dispatchers)
                                   (adu/mk-keydown-dispatcher on-key-dispatchers))
+         blur-dispatcher (adu/mk-dispatcher [:form-field/blur component-data-path])
          change-dispatcher* (when on-change
                               (adu/mk-dispatcher (adu/append-to-dispatcher on-change component-data-path)))
          change-dispatcher (if change-dispatcher*
@@ -99,7 +100,8 @@
                              ;; else
                              (fn [e]
                                (re-frame/dispatch [dispatch-key component-data-path (adu/js-event-val e)])))]
-     (cond-> {:on-change change-dispatcher}
+     (cond-> {:on-change change-dispatcher
+              :on-blur blur-dispatcher}
              on-key-down-dispatcher (assoc :on-key-down on-key-down-dispatcher)))))
 
 (s/fdef mk-dispatchers
@@ -144,7 +146,8 @@
   "Handler function for the :form-field/blur event. Updates the :active? key in the
   field data map. Takes the path to the component to update."
   [db [_ path]]
-  (update-in db path assoc :active? false))
+  (update-in db path
+             assoc :active? false :visited? true))
 
 (re-frame/reg-event-db
   :form-field/blur

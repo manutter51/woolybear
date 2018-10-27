@@ -3,6 +3,7 @@
    [re-frame.core :as re-frame]
    [woolybear.subs :as subs]
    [woolybear.ad.catalog :as ad-catalog]
+   [woolybear.pages.registration :as registration]
    ))
 
 
@@ -39,6 +40,7 @@
     :home-panel [home-panel]
     :about-panel [about-panel]
     :ad-catalog-panel [ad-catalog/page]
+    :registration-page [registration/page]
     [:div]))
 
 (defn show-panel [panel-name]

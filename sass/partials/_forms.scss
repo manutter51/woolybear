@@ -28,3 +28,8 @@
 .disabled {
   color: $grey-light;
 }
+
+.field.is-grouped button,
+.field.is-grouped a {
+  margin-left: 0.5rem;
+}

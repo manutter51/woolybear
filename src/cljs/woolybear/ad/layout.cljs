@@ -134,6 +134,29 @@
                :children (s/+ any?))
   :ret vector?)
 
+(defn section-heading
+  "
+  Simple heading, designed to appear exactly once at the top of a section.
+  "
+  [& args]
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+        classes-sub (adu/subscribe-to subscribe-to-classes)]
+    (fn [& args]
+      (let [[_ children] (adu/extract-opts args)
+            dynamic-classes @classes-sub]
+        (into [:div {:class (adu/css->str :container
+                                          :wb-section-heading
+                                          :is-size-1
+                                          extra-classes
+                                          dynamic-classes)}]
+              children)))))
+
+(s/fdef section-heading
+  :args (s/cat :opts (s/keys :opt-un [:ad/extra-classes
+                                      :ad/subscribe-to-classes])
+               :children (s/+ any?))
+  :ret vector?)
+
 (defn text-block
   "
   Simple container for one or more paragraphs of text. Automatically adds a
@@ -153,6 +176,48 @@
               children)))))
 
 (s/fdef text-block
+  :args (s/cat :opts (s/keys :opt-un [:ad/extra-classes
+                                      :ad/subscribe-to-classes])
+               :children (s/+ any?))
+  :ret vector?)
+
+(defn centered
+  "
+  Component that centers itself horizontally on the page. Accepts standard
+  :extra-classes and :subscribe-to-classes options."
+  [& args]
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+        classes-sub (adu/subscribe-to subscribe-to-classes)]
+    (fn [& args]
+      (let [[_ children] (adu/extract-opts args)
+            dynamic-classes @classes-sub]
+        (into [:div {:class (adu/css->str :container :wb-centered
+                                          extra-classes
+                                          dynamic-classes)}]
+              children)))))
+
+(s/fdef centered
+  :args (s/cat :opts (s/keys :opt-un [:ad/extra-classes
+                                      :ad/subscribe-to-classes])
+               :children (s/+ any?))
+  :ret vector?)
+
+(defn caption
+  "
+  Component in a small, italicized fort, for captions. Accepts standard
+  :extra-classes and :subscribe-to-classes options."
+  [& args]
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+        classes-sub (adu/subscribe-to subscribe-to-classes)]
+    (fn [& args]
+      (let [[_ children] (adu/extract-opts args)
+            dynamic-classes @classes-sub]
+        (into [:div {:class (adu/css->str :wb-caption
+                                          extra-classes
+                                          dynamic-classes)}]
+              children)))))
+
+(s/fdef caption
   :args (s/cat :opts (s/keys :opt-un [:ad/extra-classes
                                       :ad/subscribe-to-classes])
                :children (s/+ any?))
@@ -220,8 +285,8 @@
     (fn [& args]
       (let [[_ children] (adu/extract-opts args)
             dynamic-classes @classes-sub]
-        (into [:div {:class (adu/css->str :columns
-                                          :wb-columns
+        (into [:div {:class (adu/css->str :column
+                                          :wb-column
                                           extra-classes
                                           dynamic-classes)}]
               children)))))
@@ -267,3 +332,9 @@
 (s/fdef zero-pad
   :args (s/cat :children (s/+ any?))
   :ret vector?)
+
+(defn clearfix
+  "Simple component to clear wrapping after an .is-pulled-left or .is-pulled-right element.
+  Takes no arguments"
+  []
+  [:div.is-clearfix])

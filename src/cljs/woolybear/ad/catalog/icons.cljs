@@ -15,9 +15,11 @@
      "See https://bulma.io/documentation/elements/image/ for handy Bulma classes you
      can apply to images to set the placeholder size."
      [layout/padded
-      [images/image {:src "/img/logo.png"}]]
+      [images/image {:src           "/img/logo.png"
+                     :extra-classes #{:is-4by1 :adc-width-20}}]]
      '[layout/padded
-      [images/image {:src "/img/logo.png"}]])
+      [images/image {:src           "/img/logo.png"
+                     :extra-classes #{:is-4by1 :adc-width-20}}]])
 
    (acu/demo "Standard Icons"
      "Simple, FontAwesome-based icons."

@@ -1,5 +1,5 @@
 (defproject woolybear "0.1.0-SNAPSHOT"
-  :dependencies [[org.clojure/clojure "1.10.0-alpha8"]
+  :dependencies [[org.clojure/clojure "1.10.0-beta4"]
                  [org.clojure/clojurescript "1.10.339"]
                  [org.clojure/test.check "0.10.0-alpha3"]
                  [expound "0.7.1"]
