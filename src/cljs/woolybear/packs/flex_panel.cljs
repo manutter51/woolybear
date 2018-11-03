@@ -8,7 +8,32 @@
             [reagent.ratom :as ratom]
             [woolybear.ad.utils :as adu]
             [woolybear.ad.containers :as containers]
-            [cljs.spec.alpha :as s]))
+            [cljs.spec.alpha :as s]
+            [re-frame.core :as re-frame]))
+
+;;;
+;;; Subs
+;;;
+
+(re-frame/reg-sub
+  :db/page-height
+  (fn [db _]
+    (:page-height db)))
+
+;;;
+;;; Event handlers
+;;;
+
+(defn get-js-page-height
+  []
+  (.. js/document -documentElement -clientHeight))
+
+;; TODO This should really be a co-effect
+(re-frame/reg-event-db
+  :db/recalculate-page-height
+  (fn [db _]
+    (let [h (get-js-page-height)]
+      (assoc db :page-height h))))
 
 (defn flex-fixed
   "
@@ -123,20 +148,30 @@
   [& args]
   (let [[{:keys [height extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
         classes-sub (adu/subscribe-to subscribe-to-classes)
-        flex-height (ratom/atom 0)
+        page-height (adu/subscribe-to [:db/page-height])
+        flex-height-adjustment (ratom/atom 0)
         flex-top-height (ratom/atom 0)
         flex-bottom-height (ratom/atom 0)
-        size-change-handler (fn [comp]
-                              (reset! flex-height (-> comp
-                                                      (reagent/dom-node)
-                                                      .-offsetHeight)))
+        resize-handler (fn [e]
+                         (re-frame/dispatch [:db/recalculate-page-height]))
+        did-mount-handler (fn [comp]
+                            (let [page-height (get-js-page-height)
+                                  comp-height (-> comp
+                                                  (reagent/dom-node)
+                                                  .-offsetHeight)]
+                              (reset! flex-height-adjustment (- page-height comp-height)))
+                            (.addEventListener js/window "resize" resize-handler)
+                            (re-frame/dispatch [:db/recalculate-page-height]))
+        remove-resize-handler (fn [e]
+                                (.removeEventListener js/window "resize" resize-handler))
         render-fn (fn [& args]
                     (let [[_ children] (adu/extract-opts args)
                           flex-contents (filter #(= :other (flex-type %)) children)
                           the-flex-top (get-fixed-child children :flex-top flex-top-height)
                           the-flex-bottom (get-fixed-child children :flex-bottom flex-bottom-height)
                           dynamic-classes @classes-sub
-                          content-height (- @flex-height (+ @flex-top-height @flex-bottom-height))
+                          panel-height (- @page-height @flex-height-adjustment)
+                          content-height (- panel-height (+ @flex-top-height @flex-bottom-height))
                           content-height (str content-height "px")]
                       [:div {:style {:height height}
                              :class (adu/css->str :wb-flex-panel
@@ -144,15 +179,15 @@
                                                   dynamic-classes)}
                        the-flex-top
                        ^{:key (str "flex-content-" content-height)}
-                       (into [flex-content {:height content-height
+                       (into [flex-content {:height              content-height
                                             :date-content-height content-height}] flex-contents)
                        the-flex-bottom
                        ]))]
     (reagent/create-class
-      {:display-name         "flex-panel"
-       :component-did-mount  size-change-handler
-       :component-did-update size-change-handler
-       :reagent-render       render-fn})))
+      {:display-name           "flex-panel"
+       :component-did-mount    did-mount-handler
+       :component-will-unmount remove-resize-handler
+       :reagent-render         render-fn})))
 
 (s/fdef flex-panel
   :args (s/cat :opts (s/keys :opt-un [:ad/extra-classes

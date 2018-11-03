@@ -2,12 +2,12 @@
 @import "bulma/sass/utilities/functions";
 
 $blue: #3D4B86;
-$orange: #f58031;
+$orange: #be5725;
 $red: #ef3d3c;
 $green: #39b54a;
 $grey: #58595b;
 
-$size-1: 1.5rem;
+$size-1: 2.5rem;
 $size-2: 1.4rem;
 $size-3: 1.3rem;
 $size-4: 1.2rem;
@@ -22,8 +22,12 @@ $primary: $orange;
 }
 
 .wb-page-header {
+  .wb-page-title {
+    color: $orange;
+  }
+
   .wb-padded {
-    padding-top: 4rem;
+    padding-top: 2.75rem;
   }
 
   .image {
