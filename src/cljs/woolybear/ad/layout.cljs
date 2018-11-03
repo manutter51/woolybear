@@ -23,10 +23,10 @@
   permitting).
   "
   [& args]
-  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-args args)
         classes-sub (adu/subscribe-to subscribe-to-classes)]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             dynamic-classes @classes-sub]
         (into [:div {:class (adu/css->str :container
                                           :wb-page
@@ -46,10 +46,10 @@
   title, nav items, etc.
   "
   [& args]
-  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-args args)
         classes-sub (adu/subscribe-to subscribe-to-classes)]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             dynamic-classes @classes-sub]
         (into [:div {:class (adu/css->str :container
                                           :wb-page-header
@@ -68,10 +68,10 @@
   Simple page title, designed to appear exactly once at the top of a page.
   "
   [& args]
-  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-args args)
         classes-sub (adu/subscribe-to subscribe-to-classes)]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             dynamic-classes @classes-sub]
         [:div {:class (adu/css->str :container
                                     :wb-page-title
@@ -91,11 +91,11 @@
   Main content area of page.
   "
   [& args]
-  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-args args)
         classes-sub (adu/subscribe-to subscribe-to-classes)
         ]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             dynamic-classes @classes-sub
             ]
         (into [:div {:class (adu/css->str :content
@@ -117,10 +117,10 @@
   page will have vertical separation between them.
   "
   [& args]
-  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-args args)
         classes-sub (adu/subscribe-to subscribe-to-classes)]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             dynamic-classes @classes-sub]
         (into [:div {:class (adu/css->str :section
                                           :wb-section
@@ -139,10 +139,10 @@
   Simple heading, designed to appear exactly once at the top of a section.
   "
   [& args]
-  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-args args)
         classes-sub (adu/subscribe-to subscribe-to-classes)]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             dynamic-classes @classes-sub]
         (into [:div {:class (adu/css->str :container
                                           :wb-section-heading
@@ -164,10 +164,10 @@
   last child element.
   "
   [& args]
-  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-args args)
         classes-sub (adu/subscribe-to subscribe-to-classes)]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             dynamic-classes @classes-sub]
         (into [:div {:class (adu/css->str :content
                                           :wb-text-block
@@ -186,10 +186,10 @@
   Component that centers itself horizontally on the page. Accepts standard
   :extra-classes and :subscribe-to-classes options."
   [& args]
-  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-args args)
         classes-sub (adu/subscribe-to subscribe-to-classes)]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             dynamic-classes @classes-sub]
         (into [:div {:class (adu/css->str :container :wb-centered
                                           extra-classes
@@ -207,10 +207,10 @@
   Component in a small, italicized fort, for captions. Accepts standard
   :extra-classes and :subscribe-to-classes options."
   [& args]
-  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-args args)
         classes-sub (adu/subscribe-to subscribe-to-classes)]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             dynamic-classes @classes-sub]
         (into [:div {:class (adu/css->str :wb-caption
                                           extra-classes
@@ -228,11 +228,11 @@
   Encloses contents inside a frame with rounded corners and a slight drop
   shadow"
   [& args]
-  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-args args)
         classes-sub (adu/subscribe-to subscribe-to-classes)
         ]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             dynamic-classes @classes-sub]
         (into [:div {:class (adu/css->str :box
                                           :wb-frame
@@ -253,11 +253,11 @@
   options.
   "
   [& args]
-  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-args args)
         classes-sub (adu/subscribe-to subscribe-to-classes)
         ]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             dynamic-classes @classes-sub]
         (into [:div {:class (adu/css->str :columns
                                           :wb-columns
@@ -279,11 +279,11 @@
   for details.
   "
   [& args]
-  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-args args)
         classes-sub (adu/subscribe-to subscribe-to-classes)
         ]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             dynamic-classes @classes-sub]
         (into [:div {:class (adu/css->str :column
                                           :wb-column
@@ -303,11 +303,11 @@
   Supports standard :extra-classes and :subscribe-to-classes options.
   "
   [& args]
-  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-args args)
         classes-sub (adu/subscribe-to subscribe-to-classes)
         ]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             dynamic-classes @classes-sub
             ]
         (into [:div {:class (adu/css->str :wb-padded

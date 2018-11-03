@@ -60,7 +60,7 @@
 ;; a vector of keywords to be used in a call to `assoc-in` or `update-in`.
 (s/def :ad/component-path (s/coll-of keyword? :kind vector?))
 
-(defn extract-opts
+(defn extract-args
   "Given a vector of arguments, checks to see if the first argument is a map of options.
   Returns a 2-element vector containing the options (if any) and a vector of the remaining
   arguments.
@@ -86,7 +86,7 @@
   "Given a hiccup-style vector representing a DOM element, and a key/value pair,
   add the k/v pair to the element's opts map, creating that map if needed"
   [elem k v]
-  (let [[opts kids] (extract-opts (rest elem))
+  (let [[opts kids] (extract-args (rest elem))
         opts (or opts {})
         result [(first elem) (assoc opts k v)]]
     (into result kids)))
@@ -96,7 +96,7 @@
   opts map, and a list of new children, replace the element's children by
   the new children, preserving any opts value that may be present."
   [elem new-kids]
-  (let [[opts _] (extract-opts (rest elem))]
+  (let [[opts _] (extract-args (rest elem))]
     (if opts
       (into [(first elem) opts] new-kids)
       (into [(first elem)] new-kids))))

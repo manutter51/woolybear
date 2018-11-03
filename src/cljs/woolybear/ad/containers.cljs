@@ -46,11 +46,11 @@
   * :subscribe-to-classes - subscription to dynamic CSS classes to apply at runtime.
   "
   [& args]
-  (let [[opts _] (adu/extract-opts args)
+  (let [[opts _] (adu/extract-args args)
         {:keys [extra-classes subscribe-to-classes]} opts
         classes-sub (adu/subscribe-to subscribe-to-classes)]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             dynamic-classes @classes-sub]
         (into [:div {:class (adu/css->str :wb-scroll-pane-header
                                           extra-classes
@@ -75,11 +75,11 @@
   * :subscribe-to-classes - subscription to dynamic CSS classes to apply at runtime.
   "
   [& args]
-  (let [[opts _] (adu/extract-opts args)
+  (let [[opts _] (adu/extract-args args)
         {:keys [extra-classes subscribe-to-classes]} opts
         classes-sub (adu/subscribe-to subscribe-to-classes)]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             dynamic-classes @classes-sub]
         (into [:div {:class (adu/css->str :wb-scroll-pane-footer extra-classes dynamic-classes)}]
               children)))))
@@ -146,10 +146,10 @@
   Generic bar component, suitable for use as a toolbar, button bar, etc.
   "
   [& args]
-  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-args args)
         classes-sub (adu/subscribe-to subscribe-to-classes)]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             dynamic-classes @classes-sub]
         (into [:div {:class (adu/css->str :level :wb-bar
                                           extra-classes dynamic-classes)}]
@@ -181,14 +181,14 @@
   "
   [& args]
   (let [[{:keys [show-label hide-label
-                 extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+                 extra-classes subscribe-to-classes]} _] (adu/extract-args args)
         visible? (ratom/atom false)
         show-label (or show-label 'Show')
         hide-label (or hide-label 'Hide')
         classes-sub (adu/subscribe-to subscribe-to-classes)
         click-dispatcher (fn [_] (swap! visible? not))]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             visible? @visible?
             button-label (if visible? hide-label show-label)
             dynamic-classes @classes-sub]

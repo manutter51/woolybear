@@ -35,11 +35,13 @@
   truthy, will add a red asterisk to the label. You can also pass in a :for option containing
   the DOM ID of the element that the label describes.
   "
-  [& args]
-  (let [[{:keys [extra-classes subscribe-to-classes required? for]} _] (adu/extract-opts args)
+  [& args]   ;; opts & children
+  (let [[opts _] (adu/extract-args args)
+        {:keys [extra-classes subscribe-to-classes
+                required? for]} opts
         classes-sub (adu/subscribe-to subscribe-to-classes)]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             dynamic-classes @classes-sub
             attribs (cond-> {:class (adu/css->str :label :wb-label
                                                   extra-classes
@@ -122,7 +124,9 @@
   "Handler function for :form-field/init event. The event should be dispatched with
   two additional arguments: the path to the component, and the default value, if any."
   [db [_ path & [default]]]
-  (assoc-in db path (mk-field-data path default)))
+  (assoc-in
+    db path
+    (mk-field-data path default)))
 
 (re-frame/reg-event-db
   :form-field/init
@@ -291,15 +295,20 @@
   option must be a subscription returning this data.
   "
   [opts]
-  (let [{:keys [subscribe-to-component-data component-data-path default subscribe-to-disabled?
-                subscribe-to-errors extra-classes subscribe-to-classes]} opts
-        component-data-sub (adu/subscribe-to subscribe-to-component-data)
+  (let [{:keys [subscribe-to-component-data
+                component-data-path
+                default subscribe-to-disabled?
+                subscribe-to-errors extra-classes
+                subscribe-to-classes]} opts
+        component-data-sub (adu/subscribe-to
+                             subscribe-to-component-data)
         disabled?-sub (adu/subscribe-to subscribe-to-disabled?)
         errors-sub (adu/subscribe-to subscribe-to-errors)
         classes-sub (adu/subscribe-to subscribe-to-classes)
         attribs (get-text-input-attribs opts)]
     ;; dispatch init event at component definition time
-    (re-frame/dispatch [:form-field/init component-data-path default])
+    (re-frame/dispatch [:form-field/init
+                        component-data-path default])
     (fn [_]
       (let [{:keys [value]} @component-data-sub
             dynamic-classes @classes-sub
@@ -325,10 +334,10 @@
   :subscribe-to-classes options.
   "
   [& args]
-  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+  (let [[{:keys [extra-classes subscribe-to-classes]} _] (adu/extract-args args)
         classes-sub (adu/subscribe-to subscribe-to-classes)]
     (fn [& args]
-      (let [[_ children] (adu/extract-opts args)
+      (let [[_ children] (adu/extract-args args)
             dynamic-classes @classes-sub]
         (into [:div {:class (adu/css->str :field :wb-field-group
                                           extra-classes

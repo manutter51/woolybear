@@ -42,14 +42,14 @@
   "
   [type-class & args]
   (let [[{:keys [extra-classes subscribe-to-classes
-                 on-size-change]} _] (adu/extract-opts args)
+                 on-size-change]} _] (adu/extract-args args)
         classes-sub (adu/subscribe-to subscribe-to-classes)
         size-change-handler (fn [comp]
                               (on-size-change (-> comp
                                                   (reagent/dom-node)
                                                   .-offsetHeight)))
         render-fn (fn [& args]
-                    (let [[_ children] (adu/extract-opts args)
+                    (let [[_ children] (adu/extract-args args)
                           dynamic-classes @classes-sub]
                       (into [:div {:class (adu/css->str type-class
                                                         extra-classes
@@ -146,7 +146,7 @@
   than one of each.
   "
   [& args]
-  (let [[{:keys [height extra-classes subscribe-to-classes]} _] (adu/extract-opts args)
+  (let [[{:keys [height extra-classes subscribe-to-classes]} _] (adu/extract-args args)
         classes-sub (adu/subscribe-to subscribe-to-classes)
         page-height (adu/subscribe-to [:db/page-height])
         flex-height-adjustment (ratom/atom 0)
@@ -165,7 +165,7 @@
         remove-resize-handler (fn [e]
                                 (.removeEventListener js/window "resize" resize-handler))
         render-fn (fn [& args]
-                    (let [[_ children] (adu/extract-opts args)
+                    (let [[_ children] (adu/extract-args args)
                           flex-contents (filter #(= :other (flex-type %)) children)
                           the-flex-top (get-fixed-child children :flex-top flex-top-height)
                           the-flex-bottom (get-fixed-child children :flex-bottom flex-bottom-height)
