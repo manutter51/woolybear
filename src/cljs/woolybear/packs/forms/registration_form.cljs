@@ -111,8 +111,10 @@
     (let [{:keys [value visited?]} email-data]
       (when visited?
         (cond
-          (nil? (seq value)) [{:msg "Email is required" :class :error}]
-          (nil? (re-find #".+@.+\..+" (or value ""))) [{:msg "Unrecognized email format" :class :warning}]
+          (nil? (seq value))
+          [{:msg "Email is required" :class :error}]
+          (nil? (re-find #".+@.+\..+" (or value "")))
+          [{:msg "Unrecognized email format" :class :warning}]
           :else nil)))))
 
 (re-frame/reg-sub
@@ -220,10 +222,10 @@
 (defn registration-form
   "Simple registration form for new users."
   []
-  (let [fields {:last-name  "Last Name"
-                :first-name "First Name"
+  (let [fields {              ;:last-name  "Last Name"
+                ;:first-name "First Name"
                 :email      "Email Address"
-                :nickname   "Nickname"
+                ;:nickname   "Nickname"
                 :password   "Password"
                 :confirm    "Confirm Password"}
         required? #{:email :password :confirm}]

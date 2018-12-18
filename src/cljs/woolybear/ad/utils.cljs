@@ -175,7 +175,7 @@
                       {}
                       dispatchers)]
     (fn [e]
-      (let [c (..  e -target -char)]
+      (let [c (.-key e)]
         (when (has-key? c)
           ;; retrieve dispatcher and execute it
           ((get dispatchers c)))))))

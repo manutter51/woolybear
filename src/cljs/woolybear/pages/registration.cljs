@@ -11,7 +11,7 @@
                    :extra-classes #{:width-20 :is-4by1 :is-pulled-left}}]
     [layout/padded
      [layout/page-title "Sign up for 'pillar"]
-     [layout/text-block "To buy and sell pedigreed Woolybear Caterpillars, you need to create
+     #_[layout/text-block "To buy and sell pedigreed Woolybear Caterpillars, you need to create
     an account. First name, last name, and nickname fields are optional."]]]
 
    [layout/page-body
