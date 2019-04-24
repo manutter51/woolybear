@@ -5,7 +5,8 @@
                  [expound "0.7.1"]
                  [reagent "0.7.0"]
                  [re-frame "0.10.5"]
-                 [secretary "1.2.3"]]
+                 [secretary "1.2.3"]
+                 [re-frame-utils "0.1.0"]]
 
   :plugins [[lein-cljsbuild "1.1.7"]
             [lein-sassc "0.10.5"]]

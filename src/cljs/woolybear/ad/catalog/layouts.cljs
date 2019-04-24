@@ -12,9 +12,9 @@
      to wrap each page, then edit the AD page component whenever you want to
      make changes that apply to the page as a whole."
      [layout/page
-      [layout/padded "Something much more complex would go here."]]
+      [:div "Something much more complex would go here."]]
      '[layout/page
-       [layout/padded "Something much more complex would go here."]])
+       [:div "Something much more complex would go here."]])
 
    (acu/demo "Page Header"
      "The page header component is intended for use as the top section of a
@@ -39,10 +39,10 @@
      "Use sections within a page to center the contents (space permitting).
      Multiple sections on a page will be separated by vertical spacing as
      well, to create a clear distinction between sections."
-     [layout/padded
+     [:div
       [layout/section "This is Section One. " acu/lorem]
       [layout/section "This is Section Two. " acu/lorem]]
-     '[layout/padded
+     '[:div
        [layout/section "This is Section One. " acu/lorem]
        [layout/section "This is Section Two. " acu/lorem]])
 

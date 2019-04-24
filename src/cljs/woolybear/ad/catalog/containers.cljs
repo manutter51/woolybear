@@ -18,7 +18,7 @@
          [layout/columns
           [layout/column {:extra-classes :is-one-fifth}
            [layout/padded
-            [buttons/button {:on-click click-dispatcher} "Toggle"]]]
+            [buttons/button {:on-click click-dispatcher} "Toggle Visibility"]]]
           [:div.column
            [containers/shy-block {:active? active?}
             [layout/text-block acu/lorem]]]]]))))
@@ -39,7 +39,7 @@
      as a whole."
      [containers/v-scroll-pane {:height "12rem"}
       [containers/scroll-pane-header "This line does not scroll."]
-      [containers/scroll-pane-footer "This line also does not scroll."]
+      [containers/scroll-pane-footer "This line also does not scroll"]
       [layout/text-block acu/lorem]
       [layout/text-block acu/lorem]
       [layout/text-block acu/lorem]]
@@ -58,7 +58,7 @@
      [shy-block-demo]
 
      '[layout/frame
-       [buttons/button {:on-click click-dispatcher} "Toggle"]
+       [buttons/button {:on-click click-dispatcher} "Toggle Visibility"]
        [containers/shy-block {:active? active?}
         [layout/text-block acu/lorem]]])
 

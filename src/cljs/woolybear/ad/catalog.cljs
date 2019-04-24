@@ -44,9 +44,9 @@
      [tab-panel/tab-bar {:extra-classes               :ad-catalog
                          :subscribe-to-component-data [:ad-catalog/tab-panel]}
       [buttons/tab-button {:panel-id :demo/layouts} "Layout"]
+      [buttons/tab-button {:panel-id :demo/containers} "Containers"]
       [buttons/tab-button {:panel-id :demo/icons} "Icons / Images"]
       [buttons/tab-button {:panel-id :demo/buttons} "Buttons"]
-      [buttons/tab-button {:panel-id :demo/containers} "Containers"]
       [buttons/tab-button {:panel-id :demo/forms} "Forms"]
       ]]
 

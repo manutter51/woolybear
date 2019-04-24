@@ -84,18 +84,15 @@
   to check for the :multiple? option in the on-change handler."
   ([component-data-path opts] (mk-dispatchers component-data-path opts :form-field/change))
   ([component-data-path {:keys [on-enter-key on-escape-key on-change]} dispatch-key]
-   (let [path-alias component-data-path ;; alias for convenience
+   (let [path component-data-path ;; alias for convenience
          on-key-dispatchers (cond-> {}
                                     on-enter-key (assoc "Enter"
-                                                        (adu/append-to-dispatcher on-enter-key path-alias))
+                                                        (adu/append-to-dispatcher on-enter-key path))
                                     on-escape-key (assoc "Escape"
-                                                         (adu/append-to-dispatcher on-escape-key path-alias)))
+                                                         (adu/append-to-dispatcher on-escape-key path)))
          on-key-down-dispatcher (when (seq on-key-dispatchers)
                                   (adu/mk-keydown-dispatcher on-key-dispatchers))
-         focus-dispatcher (adu/mk-dispatcher
-                            [:form-field/focus component-data-path])
-         blur-dispatcher (adu/mk-dispatcher
-                           [:form-field/blur component-data-path])
+         blur-dispatcher (adu/mk-dispatcher [:form-field/blur component-data-path])
          change-dispatcher* (when on-change
                               (adu/mk-dispatcher (adu/append-to-dispatcher on-change component-data-path)))
          change-dispatcher (if change-dispatcher*
@@ -106,7 +103,6 @@
                              (fn [e]
                                (re-frame/dispatch [dispatch-key component-data-path (adu/js-event-val e)])))]
      (cond-> {:on-change change-dispatcher
-              :on-focus focus-dispatcher
               :on-blur blur-dispatcher}
              on-key-down-dispatcher (assoc :on-key-down on-key-down-dispatcher)))))
 

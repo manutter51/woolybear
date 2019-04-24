@@ -28,7 +28,7 @@
   []
   (.. js/document -documentElement -clientHeight))
 
-;; TODO This should really be a co-effect...
+;; TODO This should really be a co-effect
 (re-frame/reg-event-db
   :db/recalculate-page-height
   (fn [db _]
@@ -194,3 +194,4 @@
                                       :ad/subscribe-to-classes])
                :children (s/+ any?))
   :ret vector?)
+
